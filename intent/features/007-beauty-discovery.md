@@ -6,6 +6,8 @@ This feature was first built from a five-line intent with no scope or acceptance
 (pull request #6). A review found defects, and this file was then written out in full to
 match the other features. The original text is kept under Goal.
 
+**Later changes:** Feature 008 replaced the drawn, named models with unnamed photographs and the repainted drawing with a palette, and changed AC-3. See `intent/features/008-real-photography.md`. The text below is as written at the time.
+
 ## Story
 As a shopper who does not know where to start, I want to build a look on a model who feels
 like me and see which products make it, so that I can put the whole look in my bag.

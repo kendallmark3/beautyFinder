@@ -2,6 +2,8 @@
 
 **Status:** Done · Evidence: `evidence/003-beauty-home/` · **Team:** Complexion squad
 
+**Later changes:** Feature 008 replaced the illustration with photographs, replaced the "no stock photos" rule, and changed AC-2. See `intent/features/008-real-photography.md`. The text below is as written at the time.
+
 ## Story
 As a shopper arriving at Beauty Advisor, I want the front screen to look and feel like a
 beauty site and point me at the Shade Finder, so that I want to start finding my shade.

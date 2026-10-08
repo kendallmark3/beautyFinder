@@ -3,7 +3,8 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createServer } from '../src/server.js';
-import { MODELS, NO_MATCH, lookItems, lookName, lookSummary, reasoning, modelSvg } from '../public/discover.js';
+import { shadeColor } from '../public/shade-color.js';
+import { MODELS, NO_MATCH, lookItems, lookName, lookSummary, palette, reasoning } from '../public/discover.js';
 
 let server, base, products;
 before(async () => {
@@ -15,7 +16,7 @@ before(async () => {
 after(() => server.close());
 
 const text = async (p) => (await fetch(`${base}${p}`)).text();
-const state = { model: MODELS[0], depth: 8, undertone: 'warm', lip: 'berry', eyes: 'dramatic', finish: 'dewy', blush: 'peach' };
+const state = { model: MODELS[3], depth: 9, undertone: 'warm', lip: 'berry', eyes: 'dramatic', finish: 'dewy', blush: 'peach' };
 const match = { code: '330', name: '330 Warm Amber', depth: 8, undertone: 'warm', confidence: 'excellent' };
 const header = (html) => html.match(/<header>[\s\S]*?<\/header>/)[0];
 
@@ -32,24 +33,28 @@ test('AC-1: the hero has one primary button, to discovery, and every page links 
 });
 
 test('AC-2: the look is named, summarised and explained without "perfect"', () => {
-  assert.match(lookName(state), /Amara/);
+  assert.equal(lookName(state), 'Evening Berry Glow');
   assert.match(lookSummary(state), /dewy skin/);
   const why = reasoning(state, match);
   assert.match(why, /330 Warm Amber/);
   assert.doesNotMatch(why + lookName(state) + lookSummary(state), /perfect/i);
 });
 
-test('AC-3: every model has repaintable skin, lips, lashes and cheeks, and its own glow', () => {
-  const glowIds = [];
-  for (const m of [...MODELS, MODELS[0]]) {
-    const svg = modelSvg(m);
-    for (const v of ['--skin', '--skin-shadow', '--lip', '--lash', '--blush', '--shine']) assert.ok(svg.includes(`var(${v})`), `${m.id} ${v}`);
-    const id = svg.match(/<radialGradient id="([^"]+)"/)[1];
-    assert.ok(svg.includes(`fill="url(#${id})"`), 'the glow uses its own gradient');
-    glowIds.push(id);
-  }
-  // Two drawings sharing an id is what stopped the finish from showing.
-  assert.equal(new Set(glowIds).size, glowIds.length);
+test('AC-3: the chosen model is a photograph and the look is a palette of the chosen colours (changed by Feature 008)', async () => {
+  const chips = palette(state, match);
+  assert.deepEqual(chips.map((c) => c.part), ['Foundation', 'Finish', 'Eyes', 'Lips', 'Cheeks']);
+  assert.deepEqual(chips.map((c) => c.value), ['330 Warm Amber', 'Dewy glow', 'Dramatic', 'Berry', 'Peach']);
+  assert.equal(chips[0].color, shadeColor(match.depth, match.undertone));
+  assert.equal(chips[0].finish, 'dewy');
+  assert.equal(chips[3].color, '#7a2447');
+  // Nothing applied shows as an empty chip, and a pending match says so.
+  const bare = palette({ ...state, eyes: 'natural', blush: 'none' }, null);
+  assert.equal(bare[2].color, null);
+  assert.equal(bare[4].color, null);
+  assert.equal(bare[0].value, 'Finding your shade');
+  for (const m of MODELS) assert.match(m.src, /^\/photos\/model-[a-z-]+\.jpg$/);
+  const js = await readFile(new URL('../public/discover.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(js, /<svg|modelSvg|applyLook/);
 });
 
 test('AC-4: discovery choices are never stored or logged, and only two addresses are requested', async () => {
@@ -80,12 +85,12 @@ test('AC-6: with no shade match the look says so and lists no foundation', () =>
   assert.deepEqual(lookItems(state, match, []), []);
 });
 
-test('AC-7: the page says what is sent and that lip, cheek and eye colours are a preview', async () => {
+test('AC-7: the page says what is sent and that the palette is a preview', async () => {
   const page = await text('/discover.html');
   assert.match(page, /id="privacy-note">[^<]*skin depth and undertone are sent to our server, which does not log or store them/);
-  assert.match(page, /id="preview-note">Lip, cheek and eye colours are a preview on the model\./);
+  assert.match(page, /id="preview-note">The palette is a preview of your choices; nothing in the photograph is altered\./);
   assert.doesNotMatch(page, /stay on this device|exactly what created it/);
-  assert.match(reasoning(state, match), /the berry colour on the model is a preview/);
+  assert.match(reasoning(state, match), /the berry colour in the palette is a preview/);
 });
 
 test('AC-8: the discovery page uses the app\'s name and navigation, and its product buttons are readable', async () => {
