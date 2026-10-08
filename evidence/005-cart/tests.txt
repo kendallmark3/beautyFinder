@@ -1,0 +1,40 @@
+✔ AC-1: every product has a priceCents that is a positive whole number (21.083583ms)
+✔ AC-2: pricing returns each line with unit price and line total, a subtotal, and a total (8.420625ms)
+✔ AC-3: a price supplied in the request is ignored (1.21875ms)
+✔ AC-4: invalid input returns 400 with a message per invalid field (5.651833ms)
+✔ AC-5: same product and shade raises quantity, another shade is a new line, quantity stays 1 to 10, lines can be removed (0.226292ms)
+✔ AC-6: the bag is kept in session storage only, the pricing request has no shade, and the server keeps nothing (15.111166ms)
+✔ AC-7: /cart.html shows lines, quantity controls and total, and every page header has a Bag link with a count (19.140167ms)
+✔ AC-8: checkout says it is a demo and sends nothing (2.0035ms)
+✔ AC-9: add to bag is offered on the catalog, the hero try-on, and Shade Finder results (1.49225ms)
+✔ AC-1: GET /api/products returns the full catalog (20.19025ms)
+✔ AC-2: ?category= filters products (case-insensitive) (2.292ms)
+✔ AC-3: unknown category returns 200 with an empty list (3.0345ms)
+✔ AC-4: every foundation shade has code, name, depth (1-10) and undertone (3.086166ms)
+✔ AC-1: / shows a hero with a headline and a link to the Shade Finder (22.803208ms)
+✔ AC-2: /hero.svg is served as an SVG image and shown with alternative text (7.867958ms)
+✔ AC-3: the shared stylesheet fills the page with a new background colour (5.746042ms)
+✔ AC-4: the catalog filters and product grid are still on the front screen (1.612584ms)
+✔ AC-5: the front screen and the illustration load nothing from another site (14.142791ms)
+✔ AC-6: hero copy never uses "perfect" (8.903916ms)
+✔ AC-1: a valid request returns exactly 3 shades, best match first (34.006417ms)
+✔ AC-2: at equal depth distance, the shopper's undertone ranks first (0.157625ms)
+✔ AC-3: invalid input returns 400 with a message per invalid field (8.977583ms)
+✔ AC-4: when the best match scores above 1.5, consultation is true (0.11525ms)
+✔ AC-5: skin inputs are never written to logs or storage (8.804083ms)
+✔ AC-6: /shade-finder.html offers depth and undertone and shows results and the consultation notice (7.09ms)
+✔ AC-1: every foundation shade is offered as a button labelled with its name (34.184583ms)
+✔ AC-2: picking a shade paints the model with that shade's shadeColor and names it (0.365625ms)
+✔ AC-3: until a shade is picked the model steps lighter to deeper and wraps; picking stops it (0.19825ms)
+✔ AC-4: with reduced motion nothing auto-cycles or animates, and picking still works (11.073ms)
+✔ AC-5: /hero.svg keeps its original colours as defaults when no script runs (8.20525ms)
+✔ AC-6: the picked shade is never logged, stored, or sent (3.045167ms)
+✔ AC-7: try-on copy calls itself a preview and never uses "perfect" (4.068708ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 190.347625

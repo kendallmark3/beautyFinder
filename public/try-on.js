@@ -58,7 +58,7 @@ export function createTryOn({ shades, show, reducedMotion = false, timers = glob
   };
 }
 
-export function mountTryOn({ row, label, art, shades, reducedMotion }) {
+export function mountTryOn({ row, label, art, shades, reducedMotion, onShow }) {
   const buttons = swatchButtons(shades).map((d) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -81,6 +81,7 @@ export function mountTryOn({ row, label, art, shades, reducedMotion }) {
         b.classList.toggle('active', j === i);
         b.setAttribute('aria-pressed', String(j === i));
       });
+      onShow?.(shade);
     },
   });
   buttons.forEach((b, i) => b.addEventListener('click', () => {

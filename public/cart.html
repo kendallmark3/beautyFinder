@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beauty Advisor · Bag</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Beauty Advisor</h1>
+    <nav><a href="/">Catalog</a><a href="/shade-finder.html">Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
+  </header>
+  <main>
+    <div class="eyebrow">Feature 005 · Bag</div>
+    <h2>Your bag</h2>
+    <div class="panel" id="empty" hidden>
+      <p>Your bag is empty.</p>
+      <a class="cta" href="/shade-finder.html">Find my shade</a>
+      <a class="quiet-link" href="/#collection">Shop the collection</a>
+    </div>
+    <div class="panel" id="bag" hidden>
+      <div id="lines"></div>
+      <div class="error" id="error" hidden></div>
+      <div class="summary" id="summary">
+        <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
+        <div class="row total"><span>Total</span><span id="total"></span></div>
+        <div class="fine">Tax and shipping are not included in this demo.</div>
+        <button class="cta" type="button" id="checkout">Checkout</button>
+        <div class="notice" id="checkout-notice" hidden>This is a demo. No order is placed and no payment is taken.</div>
+      </div>
+    </div>
+  </main>
+  <script type="module">
+    import { shadeColor } from '/shade-color.js';
+    import { MAX_LINE_QUANTITY, formatMoney, lineKey, loadBag, pricingRequest, removeLine, saveBag, setQuantity, updateBagCount } from '/cart.js';
+    const $ = (id) => document.getElementById(id);
+    let lines = loadBag();
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function change(next) {
+      lines = next;
+      saveBag(lines);
+      render();
+    }
+
+    function row(line, unitPriceCents) {
+      const key = lineKey(line);
+      const r = el('div', 'bag-line');
+      const dot = el('span', line.shadeCode ? 'swatch' : '');
+      if (line.shadeCode) dot.style.background = shadeColor(line.depth, line.undertone);
+      r.appendChild(dot);
+      const info = el('div');
+      info.appendChild(el('h3', '', line.name));
+      info.appendChild(el('p', '', line.shadeCode ? `Shade ${line.shadeName} · ${formatMoney(unitPriceCents)} each` : `${formatMoney(unitPriceCents)} each`));
+      r.appendChild(info);
+      const qty = el('div', 'qty');
+      const less = el('button', '', '−');
+      less.type = 'button'; less.disabled = line.quantity <= 1;
+      less.setAttribute('aria-label', `One fewer ${line.shadeName ?? line.name}`);
+      less.onclick = () => change(setQuantity(lines, key, line.quantity - 1));
+      const more = el('button', '', '+');
+      more.type = 'button'; more.disabled = line.quantity >= MAX_LINE_QUANTITY;
+      more.setAttribute('aria-label', `One more ${line.shadeName ?? line.name}`);
+      more.onclick = () => change(setQuantity(lines, key, line.quantity + 1));
+      qty.append(less, el('span', '', line.quantity), more);
+      r.appendChild(qty);
+      r.appendChild(el('div', 'line-total', formatMoney(unitPriceCents * line.quantity)));
+      const remove = el('button', 'remove', 'Remove');
+      remove.type = 'button';
+      remove.onclick = () => change(removeLine(lines, key));
+      r.appendChild(remove);
+      return r;
+    }
+
+    async function render() {
+      updateBagCount(lines);
+      $('empty').hidden = lines.length > 0;
+      $('bag').hidden = lines.length === 0;
+      $('error').hidden = true;
+      if (!lines.length) return;
+      try {
+        // The server prices the bag. Only product ids and quantities are sent (SEC-4).
+        const res = await fetch('/api/cart/price', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(pricingRequest(lines)),
+        });
+        if (!res.ok) throw new Error('pricing failed');
+        const priced = await res.json();
+        const unit = new Map(priced.lines.map((l) => [l.productId, l.unitPriceCents]));
+        $('lines').replaceChildren(...lines.map((l) => row(l, unit.get(l.productId))));
+        $('subtotal').textContent = formatMoney(priced.subtotalCents);
+        $('total').textContent = formatMoney(priced.totalCents);
+        $('summary').hidden = false;
+      } catch {
+        $('summary').hidden = true;
+        $('error').textContent = 'We could not price your bag just now. Please try again.';
+        $('error').hidden = false;
+      }
+    }
+
+    $('checkout').onclick = () => { $('checkout-notice').hidden = false; };
+    render();
+  </script>
+</body>
+</html>
