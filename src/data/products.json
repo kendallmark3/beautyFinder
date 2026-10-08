@@ -4,6 +4,7 @@
       "id": "FDN-001",
       "name": "Radiance Skin Foundation",
       "category": "foundation",
+      "priceCents": 4200,
       "description": "Medium-coverage serum foundation with a natural finish.",
       "shades": [
         {
@@ -120,24 +121,28 @@
       "id": "SRM-001",
       "name": "Hydra Glow Serum",
       "category": "serum",
+      "priceCents": 3800,
       "description": "Lightweight hyaluronic serum for daily hydration."
     },
     {
       "id": "SRM-002",
       "name": "Night Renewal Serum",
       "category": "serum",
+      "priceCents": 5400,
       "description": "Overnight serum for smoother-looking skin."
     },
     {
       "id": "MSC-001",
       "name": "Volume Lift Mascara",
       "category": "mascara",
+      "priceCents": 2600,
       "description": "Buildable volume with a curved brush."
     },
     {
       "id": "LIP-001",
       "name": "Velvet Matte Lipstick",
       "category": "lipstick",
+      "priceCents": 2400,
       "description": "Long-wear matte lipstick in 12 shades."
     }
   ]

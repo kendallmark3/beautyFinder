@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>Beauty Advisor</h1>
-    <nav><a href="/">Catalog</a><a id="shade-link" href="/shade-finder.html" hidden>Shade Finder</a></nav>
+    <nav><a href="/">Catalog</a><a id="shade-link" href="/shade-finder.html" hidden>Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
   </header>
   <section class="hero">
     <div class="hero-inner">
@@ -22,6 +22,7 @@
         <div class="tryon-hint">Tap a shade to preview it on the model.</div>
         <div class="swatches" id="hero-shades" role="group" aria-label="Preview a foundation shade"></div>
         <div class="tryon-label" id="tryon-label"></div>
+        <button class="cta ghost" type="button" id="tryon-add" hidden>Add this shade to bag</button>
       </div>
       <div class="hero-art">
         <img src="/hero.svg" alt="Illustration of three women with lighter, medium and deeper skin" />
@@ -37,6 +38,8 @@
   <script type="module">
     import { shadeColor } from '/shade-color.js';
     import { foundationShades, mountTryOn } from '/try-on.js';
+    import { addToBag, formatMoney, updateBagCount } from '/cart.js';
+    updateBagCount();
     const cats = ['all', 'foundation', 'serum', 'mascara', 'lipstick'];
     const filters = document.getElementById('filters');
     const grid = document.getElementById('grid');
@@ -60,6 +63,23 @@
           });
           el.appendChild(sw);
         }
+        const buy = document.createElement('div');
+        buy.className = 'buy';
+        const price = document.createElement('span');
+        price.className = 'price'; price.textContent = formatMoney(p.priceCents);
+        buy.appendChild(price);
+        if (p.shades) {
+          // A foundation is added with its shade, from the try-on or the Shade Finder.
+          const a = document.createElement('a');
+          a.className = 'quiet-link'; a.href = '/shade-finder.html'; a.textContent = 'Find my shade';
+          buy.appendChild(a);
+        } else {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'add'; b.textContent = 'Add to bag';
+          b.onclick = () => addToBag({ productId: p.id, name: p.name }, b);
+          buy.appendChild(b);
+        }
+        el.appendChild(buy);
         grid.appendChild(el);
       }
     }
@@ -76,13 +96,25 @@
       if (svg.nodeName === 'svg') art.replaceChildren(svg);
     }).catch(() => {});
     const catalog = fetch('/api/products?category=foundation').then((r) => r.json());
-    Promise.all([catalog, inlineArt]).then(([{ products }]) => mountTryOn({
-      row: document.getElementById('hero-shades'),
-      label: document.getElementById('tryon-label'),
-      art,
-      shades: foundationShades(products),
-      reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
-    }));
+    const addShade = document.getElementById('tryon-add');
+    let tryOn, shown;
+    Promise.all([catalog, inlineArt]).then(([{ products }]) => {
+      tryOn = mountTryOn({
+        row: document.getElementById('hero-shades'),
+        label: document.getElementById('tryon-label'),
+        art,
+        shades: foundationShades(products),
+        reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+        onShow: (shade) => { shown = shade; addShade.hidden = false; },
+      });
+    });
+    // Adding the shade on screen also stops the auto-cycle on it (Feature 005).
+    addShade.onclick = () => {
+      if (!shown) return;
+      const s = shown;
+      tryOn.pick(tryOn.index);
+      addToBag({ productId: s.productId, name: s.productName, shadeCode: s.code, shadeName: s.name, depth: s.depth, undertone: s.undertone }, addShade);
+    };
     // Shade Finder link appears once Feature 002 is built.
     fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>

@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>Beauty Advisor</h1>
-    <nav><a href="/">Catalog</a><a href="/shade-finder.html">Shade Finder</a></nav>
+    <nav><a href="/">Catalog</a><a href="/shade-finder.html">Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
   </header>
   <main>
     <div class="eyebrow">Feature 002 · Shade Finder</div>
@@ -34,6 +34,8 @@
   </main>
   <script type="module">
     import { shadeColor } from '/shade-color.js';
+    import { addToBag, updateBagCount } from '/cart.js';
+    updateBagCount();
     const form = document.getElementById('finder');
     const depth = document.getElementById('depth');
     const depthValue = document.getElementById('depth-value');
@@ -77,6 +79,12 @@
       c.appendChild(sw);
       c.appendChild(el('h3', '', m.name));
       c.appendChild(el('p', '', `${m.productName} · depth ${m.depth} · ${m.undertone} undertone`));
+      const buy = el('div', 'buy');
+      const add = el('button', 'add', 'Add to bag');
+      add.type = 'button';
+      add.onclick = () => addToBag({ productId: m.productId, name: m.productName, shadeCode: m.code, shadeName: m.name, depth: m.depth, undertone: m.undertone }, add);
+      buy.appendChild(add);
+      c.appendChild(buy);
       return c;
     }
 
