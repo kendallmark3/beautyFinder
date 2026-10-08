@@ -1,0 +1,55 @@
+.disco { background: radial-gradient(circle at 20% 0%, #f9e4d6 0%, #f3d5c4 45%, #ecc6b2 100%) fixed; }
+.disco h2 { font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-weight: 400; }
+.welcome { max-width: 900px; margin: 0 auto; padding: 64px 24px 40px; text-align: center; }
+.welcome h2 { font-size: 56px; line-height: 1.05; margin: 14px 0; }
+.welcome p { font-size: 18px; line-height: 1.5; color: #4a3b33; max-width: 52ch; margin: 0 auto 8px; }
+.welcome .cta { font-size: 15px; padding: 16px 40px; border-radius: 999px; }
+.faces { display: flex; justify-content: center; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+.mini { width: 150px; height: 175px; border-radius: 80px 80px 12px 12px; overflow: hidden; background: #e8bfa9; }
+.mini .model-svg, .model-svg { width: 100%; height: 100%; display: block; }
+.studio { max-width: 1100px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: start; }
+.stage { position: sticky; top: 12px; }
+.model, .look-model { background: linear-gradient(160deg, #f6d9c8, #e8bfa9); border-radius: 220px 220px 20px 20px; overflow: hidden; aspect-ratio: 400 / 460; box-shadow: 0 24px 60px rgba(120,60,30,.25); }
+.model .skin, .look-model .skin, .mini .skin { transition: fill .7s ease; }
+.model .lip, .look-model .lip { transition: fill .5s ease; }
+.model .blush, .model .lid, .model .sheen, .look-model .blush, .look-model .lid, .look-model .sheen { transition: opacity .5s ease, fill .5s ease; }
+.model .lash, .look-model .lash { transition: stroke-width .4s ease; }
+.caption { margin-top: 14px; text-align: center; font-size: 15px; color: #5a463b; min-height: 22px; text-transform: capitalize; }
+.progress { display: flex; gap: 8px; margin-bottom: 18px; }
+.dot { height: 4px; flex: 1; background: rgba(0,0,0,.12); border-radius: 2px; }
+.dot.done { background: #c9a36a; } .dot.on { background: #111; }
+.controls h2 { font-size: 34px; margin: 0 0 8px; }
+.sub { color: #5a463b; margin: 0 0 18px; line-height: 1.4; }
+.options { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.opt { text-align: left; background: rgba(255,255,255,.7); border: 2px solid transparent; border-radius: 14px; padding: 14px; cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 4px; transition: transform .2s, border-color .2s; }
+.opt:hover, .opt:focus-visible { transform: translateY(-2px); border-color: #c9a36a; }
+.opt.on { border-color: #111; background: #fff; }
+.opt i { width: 26px; height: 26px; border-radius: 50%; display: block; margin-bottom: 4px; }
+.opt small { color: #6b5a50; font-size: 12px; line-height: 1.3; }
+.nav-row { margin-top: 22px; display: flex; gap: 12px; align-items: center; }
+.nav-row .cta { margin-top: 0; border-radius: 999px; }
+.ghost { background: transparent; border: 1px solid #111; border-radius: 999px; padding: 12px 24px; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; font-size: 12px; }
+.cta:disabled { opacity: .4; cursor: not-allowed; }
+.look { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.look-copy h2 { font-size: 44px; margin: 8px 0 12px; }
+.look-copy h3 { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #b57a1a; margin: 24px 0 8px; }
+.lede { font-size: 17px; text-transform: capitalize; margin: 0; }
+.picks { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.picks li { background: rgba(255,255,255,.7); border-radius: 999px; padding: 6px 14px; font-size: 13px; }
+.products { list-style: none; padding: 0; margin: 0 0 20px; }
+.products li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.1); }
+.products li > span:first-child { flex: 1; display: flex; flex-direction: column; }
+.products small { color: #6b5a50; }
+.products .add { border: 1px solid #111; background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.products .add.added { background: #111; color: #fff; }
+.look-copy .cta { border-radius: 999px; margin-right: 12px; }
+.look-copy .ghost { margin-top: 12px; }
+.privacy { font-size: 12px; color: #6b5a50; margin-top: 16px; }
+.hero .cta.primary { margin-right: 12px; }
+@media (max-width: 800px) {
+  .studio, .look { grid-template-columns: 1fr; gap: 20px; }
+  .stage { position: static; max-width: 340px; margin: 0 auto; }
+  .welcome h2 { font-size: 38px; }
+  header { padding: 16px 20px; }
+}
+[hidden] { display: none !important; }

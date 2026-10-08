@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beauty Finder · Discover your look</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/discover.css" />
+</head>
+<body class="disco">
+  <header>
+    <h1>Beauty Finder</h1>
+    <nav><a href="/">Shop</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
+  </header>
+
+  <section id="welcome" class="welcome">
+    <div class="eyebrow">Beauty Finder</div>
+    <h2>Discover a look that looks like you.</h2>
+    <p>Pick a model who feels like you, play with colour, glow and shape, and watch the look come to life. Then take home exactly what created it.</p>
+    <button class="cta" type="button" id="begin">Start my look</button>
+    <div class="faces" id="faces-preview" aria-hidden="true"></div>
+  </section>
+
+  <main id="studio" class="studio" hidden>
+    <div class="stage">
+      <div class="model" id="model" aria-live="polite"></div>
+      <div class="caption" id="caption"></div>
+    </div>
+
+    <div class="controls">
+      <div class="progress" id="progress" role="tablist"></div>
+      <div id="step"></div>
+      <div class="nav-row">
+        <button type="button" class="ghost" id="back">Back</button>
+        <button type="button" class="cta" id="next">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <section id="look" class="look" hidden>
+    <div class="look-model" id="look-model"></div>
+    <div class="look-copy">
+      <div class="eyebrow">Your completed look</div>
+      <h2 id="look-name"></h2>
+      <p id="look-summary" class="lede"></p>
+      <h3>Why this works for you</h3>
+      <p id="look-why"></p>
+      <ul class="picks" id="picks"></ul>
+      <h3>What creates it</h3>
+      <ul class="products" id="products"></ul>
+      <button class="cta" type="button" id="add-look">Add the whole look to my bag</button>
+      <a class="quiet-link" href="/cart.html">View bag</a>
+      <button class="ghost" type="button" id="tweak">Keep experimenting</button>
+      <p class="privacy">Your choices stay on this device and are never saved.</p>
+    </div>
+  </section>
+
+  <script type="module">
+    import { MODELS, UNDERTONES, LIPS, EYES, FINISHES, BLUSHES, modelSvg, applyLook, skinFor, lookName, lookSummary, reasoning } from '/discover.js';
+    import { addToBag, formatMoney, updateBagCount } from '/cart.js';
+    updateBagCount();
+    const $ = (id) => document.getElementById(id);
+    const state = { model: null, depth: 5, undertone: 'neutral', lip: 'rose', eyes: 'natural', finish: 'soft', blush: 'peach' };
+    let match = null, products = [], stepIdx = 0, token = 0;
+
+    const STEPS = [
+      { key: 'model', title: 'Who feels like you?', sub: 'Start with the model closest to your own skin. You can change this any time.' },
+      { key: 'undertone', title: 'What colour comes through in your skin?', sub: 'No wrong answers. Pick what sounds most like you.' },
+      { key: 'finish', title: 'How should your skin look?', sub: 'Choose the finish you love.' },
+      { key: 'eyes', title: 'How much do you want your eyes to say?', sub: '' },
+      { key: 'lip', title: 'Pick a lip colour', sub: '' },
+      { key: 'blush', title: 'A touch of colour on the cheeks?', sub: '' },
+    ];
+    const OPTIONS = { undertone: UNDERTONES, finish: FINISHES, eyes: EYES, lip: LIPS, blush: BLUSHES };
+
+    const catalog = fetch('/api/products').then((r) => r.json()).then((d) => { products = d.products; });
+
+    function paint(el) {
+      if (!state.model) return;
+      const skin = skinFor(match?.depth ?? state.depth, match?.undertone ?? state.undertone);
+      applyLook(el, state, skin);
+    }
+    function mountModel(host) {
+      host.innerHTML = modelSvg(state.model);
+      paint(host);
+    }
+    function repaint() {
+      paint($('model')); paint($('look-model'));
+      $('caption').textContent = state.model ? `${lookSummary(state)}.` : '';
+    }
+
+    async function refreshMatch() {
+      const mine = ++token;
+      try {
+        const res = await fetch('/api/shade-match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ depth: state.depth, undertone: state.undertone }) });
+        const data = await res.json();
+        if (mine === token && res.ok) { match = data.matches[0]; repaint(); }
+      } catch { /* the preview still works with the starting complexion */ }
+    }
+
+    function renderProgress() {
+      $('progress').innerHTML = STEPS.map((_, i) => `<span class="dot${i === stepIdx ? ' on' : i < stepIdx ? ' done' : ''}"></span>`).join('');
+    }
+
+    function renderStep() {
+      const s = STEPS[stepIdx];
+      renderProgress();
+      const box = $('step');
+      box.innerHTML = `<h2>${s.title}</h2>${s.sub ? `<p class="sub">${s.sub}</p>` : ''}<div class="options" role="group" aria-label="${s.title}"></div>`;
+      const opts = box.querySelector('.options');
+      const items = s.key === 'model' ? MODELS : OPTIONS[s.key];
+      for (const o of items) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'opt';
+        const selected = s.key === 'model' ? state.model?.id === o.id : state[s.key] === o.id;
+        b.setAttribute('aria-pressed', String(selected));
+        if (selected) b.classList.add('on');
+        const dot = o.color ? `<i style="background:${o.color}"></i>` : '';
+        b.innerHTML = `${dot}<b>${o.label ?? o.name}</b><small>${o.hint ?? o.blurb ?? ''}</small>`;
+        b.onclick = () => choose(s.key, o);
+        opts.appendChild(b);
+      }
+      $('back').hidden = stepIdx === 0;
+      $('next').textContent = stepIdx === STEPS.length - 1 ? 'Reveal my look' : 'Next';
+      $('next').disabled = !state.model;
+    }
+
+    function choose(key, o) {
+      if (key === 'model') {
+        state.model = o; state.depth = o.depth; match = null;
+        mountModel($('model'));
+        refreshMatch();
+      } else {
+        state[key] = o.id;
+        if (key === 'undertone') refreshMatch();
+      }
+      repaint();
+      renderStep();
+    }
+
+    function productFor(category) { return products.find((p) => p.category === category); }
+
+    function showLook() {
+      mountModel($('look-model'));
+      $('look-name').textContent = lookName(state);
+      $('look-summary').textContent = `${lookSummary(state)}.`;
+      $('look-why').textContent = reasoning(state, match);
+      const tone = UNDERTONES.find((u) => u.id === state.undertone);
+      $('picks').innerHTML = [
+        `Model: ${state.model.name}`, `Undertone: ${tone.label}`, `Skin: ${FINISHES.find((f) => f.id === state.finish).label}`,
+        `Eyes: ${EYES.find((f) => f.id === state.eyes).label}`, `Lips: ${LIPS.find((f) => f.id === state.lip).label}`,
+      ].map((t) => `<li>${t}</li>`).join('');
+      const items = lookItems();
+      const ul = $('products'); ul.innerHTML = '';
+      for (const it of items) {
+        const li = document.createElement('li');
+        li.innerHTML = `<span><b>${it.label}</b><small>${it.role}</small></span><span class="price">${formatMoney(it.product.priceCents)}</span>`;
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'add'; b.textContent = 'Add';
+        b.onclick = () => addToBag(it.item, b);
+        li.appendChild(b); ul.appendChild(li);
+      }
+      $('add-look').onclick = () => { items.forEach((it, i) => addToBag(it.item, i === 0 ? $('add-look') : undefined)); };
+      $('studio').hidden = true; $('look').hidden = false;
+      paint($('look-model'));
+      $('look').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function lookItems() {
+      const out = [];
+      const fdn = productFor('foundation');
+      if (fdn && match) out.push({ label: match.name, role: 'Foundation, a close match for your selections', product: fdn, item: { productId: fdn.id, name: fdn.name, shadeCode: match.code, shadeName: match.name, depth: match.depth, undertone: match.undertone } });
+      const add = (cat, role) => { const p = productFor(cat); if (p) out.push({ label: p.name, role, product: p, item: { productId: p.id, name: p.name } }); };
+      if (state.finish === 'dewy') add('serum', 'Preps skin for a dewy glow');
+      if (state.eyes !== 'natural') add('mascara', 'For your ' + EYES.find((e) => e.id === state.eyes).word + ' eyes');
+      add('lipstick', 'Your ' + LIPS.find((l) => l.id === state.lip).label.toLowerCase() + ' lip');
+      return out;
+    }
+
+    function begin() {
+      $('welcome').hidden = true; $('studio').hidden = false;
+      choose('model', MODELS[1]);
+      stepIdx = 0; renderStep();
+    }
+    $('begin').onclick = begin;
+    $('next').onclick = () => { if (stepIdx < STEPS.length - 1) { stepIdx++; renderStep(); } else catalog.then(showLook); };
+    $('back').onclick = () => { stepIdx = Math.max(0, stepIdx - 1); renderStep(); };
+    $('tweak').onclick = () => { $('look').hidden = true; $('studio').hidden = false; stepIdx = STEPS.length - 1; renderStep(); repaint(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    $('faces-preview').innerHTML = MODELS.map((m) => `<div class="mini">${modelSvg(m)}</div>`).join('');
+    document.querySelectorAll('#faces-preview .mini').forEach((el, i) => applyLook(el, { ...state, model: MODELS[i] }, skinFor(MODELS[i].depth, 'neutral')));
+  </script>
+</body>
+</html>
