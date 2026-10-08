@@ -1,8 +1,8 @@
 # Current Feature
 
-**Active:** none. Features 001 to 006 are done.
+**Active:** none. Features 001 to 007 are done.
 
-**Last completed:** [`intent/features/006-bundles.md`](features/006-bundles.md)
+**Last completed:** [`intent/features/007-beauty-discovery.md`](features/007-beauty-discovery.md)
 
 Claude: there is no active feature. Do not start building until this pointer names one.
 When a feature is done and its

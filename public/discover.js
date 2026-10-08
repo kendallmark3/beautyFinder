@@ -57,17 +57,23 @@ export function lookSummary(s) {
   return parts.join(', ');
 }
 
+export const NO_MATCH = 'We could not match a foundation shade just now, so this look has no foundation. You can try again, or use the Shade Finder.';
+
 export function reasoning(s, match) {
-  if (!match) return '';
   const tone = find(UNDERTONES, s.undertone);
-  const lines = [`You chose ${s.model.name}'s ${tone.label.toLowerCase()} undertone and a ${s.depth <= 3 ? 'lighter' : s.depth <= 6 ? 'medium' : 'deeper'} depth, so ${match.name} is one of our closest foundation shades (${match.confidence} match). Try it as a preview; it is always worth testing in person.`];
+  const lines = [!match ? NO_MATCH : `You chose ${s.model.name}'s ${tone.label.toLowerCase()} undertone and a ${s.depth <= 3 ? 'lighter' : s.depth <= 6 ? 'medium' : 'deeper'} depth, so ${match.name} is one of our closest foundation shades (${match.confidence} match). Try it as a preview; it is always worth testing in person.`];
   if (s.finish === 'dewy') lines.push('You like a dewy glow, so we added Hydra Glow Serum to prep skin.');
   if (s.eyes !== 'natural') lines.push(`A ${find(EYES, s.eyes).word} eye calls for Volume Lift Mascara.`);
-  lines.push(`${find(LIPS, s.lip).label} lips finish the look with Velvet Matte Lipstick.`);
+  lines.push(`Velvet Matte Lipstick finishes the look; the ${find(LIPS, s.lip).label.toLowerCase()} colour on the model is a preview.`);
   return lines.join(' ');
 }
 
+// Each drawing needs its own gradient id: a page holds several, and a gradient that sits in a
+// hidden section does not paint for the others.
+let drawings = 0;
+
 export function modelSvg(m) {
+  const sheen = `sheen-${++drawings}`;
   const hairBack = {
     curls: `<circle cy="-34" r="98" fill="var(--hair)"/><circle cx="-78" cy="-70" r="34" fill="var(--hair)"/><circle cx="78" cy="-70" r="34" fill="var(--hair)"/><circle cx="-92" cy="-8" r="30" fill="var(--hair)"/><circle cx="92" cy="-8" r="30" fill="var(--hair)"/><circle cy="-118" r="36" fill="var(--hair)"/>`,
     bun: `<circle cy="-100" r="32" fill="var(--hair)"/>`,
@@ -82,13 +88,13 @@ export function modelSvg(m) {
   }[m.style];
   const earrings = m.style === 'bun' ? '<circle cx="-58" cy="26" r="5" fill="#c9a36a"/><circle cx="58" cy="26" r="5" fill="#c9a36a"/>' : '';
   return `<svg viewBox="0 0 400 460" role="img" aria-label="${m.name}: ${m.blurb}" class="model-svg">
-  <defs><radialGradient id="sheen" cx="40%" cy="30%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+  <defs><radialGradient id="${sheen}" cx="40%" cy="30%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
   <g transform="translate(200,230) scale(1.55)">
     ${hairBack}
     <path d="M-125,330 C-125,160 -60,116 -22,110 L22,110 C60,116 125,160 125,330 Z" fill="#1c1c1c"/>
     <path d="M-22,60 L22,60 L24,112 Q0,150 -24,112 Z" class="skin" style="fill:var(--skin-shadow)"/>
     <ellipse rx="56" ry="70" class="skin" style="fill:var(--skin)"/>
-    <ellipse rx="56" ry="70" fill="url(#sheen)" class="sheen" style="opacity:var(--shine)"/>
+    <ellipse rx="56" ry="70" fill="url(#${sheen})" class="sheen" style="opacity:var(--shine)"/>
     ${hairFront}
     <ellipse cx="-30" cy="-4" rx="13" ry="7" class="lid" style="fill:var(--lid);opacity:var(--lid-o)"/>
     <ellipse cx="30" cy="-4" rx="13" ry="7" class="lid" style="fill:var(--lid);opacity:var(--lid-o)"/>
@@ -111,4 +117,27 @@ export function applyLook(el, s, skin) {
 
 export function skinFor(depth, undertone) {
   return { skin: shadeColor(depth, undertone), shadow: shadeColor(depth + 0.8, undertone) };
+}
+
+// What goes in the bag for a look. A foundation is listed only with its matched shade.
+export function lookItems(s, match, products) {
+  const out = [];
+  const productFor = (category) => products.find((p) => p.category === category);
+  const fdn = productFor('foundation');
+  if (fdn && match) {
+    out.push({
+      label: match.name,
+      role: 'Foundation, a close match for your selections',
+      product: fdn,
+      item: { productId: fdn.id, name: fdn.name, shadeCode: match.code, shadeName: match.name, depth: match.depth, undertone: match.undertone },
+    });
+  }
+  const add = (category, role) => {
+    const p = productFor(category);
+    if (p) out.push({ label: p.name, role, product: p, item: { productId: p.id, name: p.name } });
+  };
+  if (s.finish === 'dewy') add('serum', 'Preps skin for a dewy glow');
+  if (s.eyes !== 'natural') add('mascara', `For your ${find(EYES, s.eyes).word} eyes`);
+  add('lipstick', 'Lipstick. The lip colour shown is a preview');
+  return out;
 }
