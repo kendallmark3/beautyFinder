@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: AC-1: GET /api/products returns the full catalog
+ok 1 - AC-1: GET /api/products returns the full catalog
+  ---
+  duration_ms: 59.925002
+  type: 'test'
+  ...
+# Subtest: AC-2: ?category= filters products (case-insensitive)
+ok 2 - AC-2: ?category= filters products (case-insensitive)
+  ---
+  duration_ms: 9.774409
+  type: 'test'
+  ...
+# Subtest: AC-3: unknown category returns 200 with an empty list
+ok 3 - AC-3: unknown category returns 200 with an empty list
+  ---
+  duration_ms: 15.729307
+  type: 'test'
+  ...
+# Subtest: AC-4: every foundation shade has code, name, depth (1-10) and undertone
+ok 4 - AC-4: every foundation shade has code, name, depth (1-10) and undertone
+  ---
+  duration_ms: 26.006163
+  type: 'test'
+  ...
+# Subtest: AC-1: valid input returns exactly 3 shades, best match first
+ok 5 - AC-1: valid input returns exactly 3 shades, best match first
+  ---
+  duration_ms: 62.597836
+  type: 'test'
+  ...
+# Subtest: AC-2: at equal depth distance, the matching undertone ranks higher
+ok 6 - AC-2: at equal depth distance, the matching undertone ranks higher
+  ---
+  duration_ms: 1.188437
+  type: 'test'
+  ...
+# Subtest: AC-3: invalid input returns 400 with a message per field
+ok 7 - AC-3: invalid input returns 400 with a message per field
+  ---
+  duration_ms: 12.17595
+  type: 'test'
+  ...
+# Subtest: AC-4: when the best score is above 1.5, consultation is true
+ok 8 - AC-4: when the best score is above 1.5, consultation is true
+  ---
+  duration_ms: 0.591988
+  type: 'test'
+  ...
+# Subtest: AC-5: skin inputs are never written to the console
+ok 9 - AC-5: skin inputs are never written to the console
+  ---
+  duration_ms: 16.613995
+  type: 'test'
+  ...
+# Subtest: AC-6: the Shade Finder page is served
+ok 10 - AC-6: the Shade Finder page is served
+  ---
+  duration_ms: 13.749424
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 703.077392

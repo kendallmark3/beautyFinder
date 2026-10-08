@@ -1,0 +1,24 @@
+# ~/.claude/CLAUDE.md: personal layer (EXAMPLE, copy and make it yours)
+#
+# This file lives in your home folder, not in the repo. Claude Code loads it in
+# EVERY repo, EVERY session. It's about how YOU work. Team rules live in the repo.
+
+## About me
+- Feature-team developer. I mostly work in Node/TypeScript and Java.
+- I prefer small, reviewable changes over big rewrites.
+
+## How I want Claude to work with me
+- Before coding, restate the acceptance criteria you're targeting in one line each.
+- Ask me before touching any file outside the feature's Scope.
+- Show a plan first; wait for "go".
+- Explain any non-obvious decision in one sentence, not a paragraph.
+
+## My testing style
+- Test first for each acceptance criterion.
+- Name tests after the AC: `AC-2: ...`.
+- Prefer real HTTP calls over mocks for route tests.
+
+## My review checklist (run it before saying "done")
+- Any new dependency? (flag it)
+- Any personal or customer data logged? (must be none)
+- Any TODOs left behind?

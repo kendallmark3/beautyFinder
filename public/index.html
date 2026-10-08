@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beauty Advisor · Catalog</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Beauty Advisor</h1>
+    <nav><a href="/">Catalog</a><a id="shade-link" href="/shade-finder.html" hidden>Shade Finder</a></nav>
+  </header>
+  <main>
+    <div class="eyebrow">Feature 001 · Product Catalog</div>
+    <h2>Shop the collection</h2>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </main>
+  <script type="module">
+    import { shadeColor } from '/shade-color.js';
+    const cats = ['all', 'foundation', 'serum', 'mascara', 'lipstick'];
+    const filters = document.getElementById('filters');
+    const grid = document.getElementById('grid');
+
+    async function load(cat) {
+      const q = cat === 'all' ? '' : `?category=${cat}`;
+      const { products } = await (await fetch(`/api/products${q}`)).json();
+      [...filters.children].forEach((b) => b.classList.toggle('active', b.dataset.cat === cat));
+      grid.innerHTML = '';
+      for (const p of products) {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `<div class="cat">${p.category}</div><h3>${p.name}</h3><p>${p.description}</p>`;
+        if (p.shades) {
+          const sw = document.createElement('div');
+          sw.className = 'swatches';
+          p.shades.forEach((s) => {
+            const d = document.createElement('span');
+            d.className = 'swatch'; d.title = s.name; d.style.background = shadeColor(s.depth, s.undertone);
+            sw.appendChild(d);
+          });
+          el.appendChild(sw);
+        }
+        grid.appendChild(el);
+      }
+    }
+    cats.forEach((c) => {
+      const b = document.createElement('button');
+      b.textContent = c; b.dataset.cat = c; b.onclick = () => load(c);
+      filters.appendChild(b);
+    });
+    load('all');
+    // Shade Finder link appears once Feature 002 is built.
+    fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
+  </script>
+</body>
+</html>

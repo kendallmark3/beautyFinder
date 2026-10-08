@@ -1,0 +1,13 @@
+{
+  "name": "beauty-advisor",
+  "version": "1.0.0",
+  "description": "IDE Series Day 04 class repo: a beauty-advisor app built feature by feature from intent.",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test \"tests/**/*.test.js\"",
+    "lab:reference": "node scripts/apply-reference.mjs"
+  }
+}

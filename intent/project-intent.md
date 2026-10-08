@@ -1,0 +1,21 @@
+# Project Intent: Beauty Advisor
+
+**Purpose:**
+A web app that helps shoppers discover products and find the right foundation shade,
+online or at the counter with a beauty advisor. Built feature by feature, each from a written intent.
+
+**Business outcomes:**
+- Fewer foundation returns caused by wrong-shade purchases.
+- Shoppers find a starting shade in under 30 seconds.
+- Beauty advisors in store use the same tool customers use at home.
+
+**Constraints:**
+- No customer skin or personal data is logged or stored (see `context/security.md`).
+- Zero runtime dependencies: runs on a locked-down corporate laptop with just Node 22.
+- Inclusive by design: the shade range and the copy work across all skin depths.
+
+**Features**
+| ID | Feature | Status |
+|----|---------|--------|
+| 001 | [Product Catalog](features/001-product-catalog.md) | Done (see `evidence/001-product-catalog/`) |
+| 002 | [Shade Finder](features/002-shade-finder.md) | **In progress: Day 04 lab** |

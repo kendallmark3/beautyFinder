@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beauty Advisor · Shade Finder</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Beauty Advisor</h1>
+    <nav><a href="/">Catalog</a><a href="/shade-finder.html">Shade Finder</a></nav>
+  </header>
+  <main>
+    <div class="eyebrow">Feature 002 · Shade Finder</div>
+    <h2>Find your foundation shade</h2>
+    <div class="panel">
+      <label for="depth">Skin depth: <strong id="depth-val">5</strong> <span style="text-transform:none;letter-spacing:0;color:#888">(1 lightest · 10 deepest)</span></label>
+      <input id="depth" type="range" min="1" max="10" step="0.5" value="5" />
+      <label>Undertone</label>
+      <div class="filters" id="undertones">
+        <button data-u="cool">cool</button><button data-u="neutral" class="active">neutral</button><button data-u="warm">warm</button>
+      </div>
+      <button class="cta" id="go">Find my shade</button>
+      <div class="error" id="err"></div>
+    </div>
+    <div class="grid" id="results"></div>
+    <div class="notice" id="consult" hidden>No close match in this range. We recommend an in-store consultation with a beauty advisor.</div>
+  </main>
+  <script type="module">
+    import { shadeColor } from '/shade-color.js';
+    const depth = document.getElementById('depth');
+    const ut = document.getElementById('undertones');
+    let undertone = 'neutral';
+    depth.oninput = () => (document.getElementById('depth-val').textContent = depth.value);
+    ut.onclick = (e) => {
+      if (!e.target.dataset.u) return;
+      undertone = e.target.dataset.u;
+      [...ut.children].forEach((b) => b.classList.toggle('active', b === e.target));
+    };
+    document.getElementById('go').onclick = async () => {
+      const res = await fetch('/api/shade-match', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ depth: Number(depth.value), undertone }),
+      });
+      const data = await res.json();
+      const out = document.getElementById('results');
+      document.getElementById('err').textContent = res.ok ? '' : Object.values(data.fields || {}).join(' · ');
+      out.innerHTML = '';
+      if (!res.ok) return;
+      data.matches.forEach((m, i) => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `<div class="cat">#${i + 1} · ${m.confidence} match</div>
+          <div class="swatch" style="width:48px;height:48px;margin:12px 0;background:${shadeColor(m.depth, m.undertone)}"></div>
+          <h3>${m.name}</h3><p>${m.productName}<br/>Depth ${m.depth} · ${m.undertone} undertone</p>`;
+        out.appendChild(el);
+      });
+      document.getElementById('consult').hidden = !data.consultation;
+    };
+  </script>
+</body>
+</html>

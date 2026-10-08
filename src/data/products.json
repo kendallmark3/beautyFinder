@@ -1,0 +1,144 @@
+{
+  "products": [
+    {
+      "id": "FDN-001",
+      "name": "Radiance Skin Foundation",
+      "category": "foundation",
+      "description": "Medium-coverage serum foundation with a natural finish.",
+      "shades": [
+        {
+          "code": "110",
+          "name": "110 Porcelain",
+          "depth": 1.0,
+          "undertone": "cool"
+        },
+        {
+          "code": "120",
+          "name": "120 Ivory",
+          "depth": 1.5,
+          "undertone": "neutral"
+        },
+        {
+          "code": "130",
+          "name": "130 Alabaster",
+          "depth": 2.0,
+          "undertone": "warm"
+        },
+        {
+          "code": "140",
+          "name": "140 Fair Rose",
+          "depth": 2.5,
+          "undertone": "cool"
+        },
+        {
+          "code": "150",
+          "name": "150 Nude Beige",
+          "depth": 3.0,
+          "undertone": "neutral"
+        },
+        {
+          "code": "160",
+          "name": "160 Golden Ivory",
+          "depth": 3.5,
+          "undertone": "warm"
+        },
+        {
+          "code": "210",
+          "name": "210 Soft Sand",
+          "depth": 4.0,
+          "undertone": "cool"
+        },
+        {
+          "code": "220",
+          "name": "220 Natural Buff",
+          "depth": 4.5,
+          "undertone": "neutral"
+        },
+        {
+          "code": "230",
+          "name": "230 Honey Beige",
+          "depth": 5.0,
+          "undertone": "warm"
+        },
+        {
+          "code": "240",
+          "name": "240 Rose Beige",
+          "depth": 5.5,
+          "undertone": "cool"
+        },
+        {
+          "code": "250",
+          "name": "250 True Beige",
+          "depth": 6.0,
+          "undertone": "neutral"
+        },
+        {
+          "code": "260",
+          "name": "260 Golden Tan",
+          "depth": 6.5,
+          "undertone": "warm"
+        },
+        {
+          "code": "310",
+          "name": "310 Cool Caramel",
+          "depth": 7.0,
+          "undertone": "cool"
+        },
+        {
+          "code": "320",
+          "name": "320 Sienna",
+          "depth": 7.5,
+          "undertone": "neutral"
+        },
+        {
+          "code": "330",
+          "name": "330 Warm Amber",
+          "depth": 8.0,
+          "undertone": "warm"
+        },
+        {
+          "code": "340",
+          "name": "340 Cocoa",
+          "depth": 8.5,
+          "undertone": "neutral"
+        },
+        {
+          "code": "350",
+          "name": "350 Mahogany",
+          "depth": 9.0,
+          "undertone": "cool"
+        },
+        {
+          "code": "360",
+          "name": "360 Espresso",
+          "depth": 9.5,
+          "undertone": "warm"
+        }
+      ]
+    },
+    {
+      "id": "SRM-001",
+      "name": "Hydra Glow Serum",
+      "category": "serum",
+      "description": "Lightweight hyaluronic serum for daily hydration."
+    },
+    {
+      "id": "SRM-002",
+      "name": "Night Renewal Serum",
+      "category": "serum",
+      "description": "Overnight serum for smoother-looking skin."
+    },
+    {
+      "id": "MSC-001",
+      "name": "Volume Lift Mascara",
+      "category": "mascara",
+      "description": "Buildable volume with a curved brush."
+    },
+    {
+      "id": "LIP-001",
+      "name": "Velvet Matte Lipstick",
+      "category": "lipstick",
+      "description": "Long-wear matte lipstick in 12 shades."
+    }
+  ]
+}
