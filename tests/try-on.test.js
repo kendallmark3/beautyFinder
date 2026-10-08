@@ -97,7 +97,7 @@ test('AC-6: the picked shade is never logged, stored, or sent', async () => {
   // Every request the front screen makes goes to a fixed address that carries no shade.
   const requests = [...(await text('/')).matchAll(/fetch\(([^,)]*)/g)].map((m) => m[1]);
   assert.ok(requests.length > 0);
-  for (const r of requests) assert.match(r, /^['`]\/(api\/products(\?category=foundation|\$\{q\})|hero\.svg|shade-finder\.html)['`]$/);
+  for (const r of requests) assert.match(r, /^['`]\/(api\/products(\?category=foundation|\$\{q\})|api\/bundles|hero\.svg|shade-finder\.html)['`]$/);
 });
 
 test('AC-7: try-on copy calls itself a preview and never uses "perfect"', async () => {

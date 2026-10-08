@@ -1,6 +1,7 @@
 // Feature 005: Bag pricing. See intent/features/005-cart.md
 // Rules: context/business-rules.md (BR-CART-1..BR-CART-4). SEC-4: a bag is never logged or stored.
 import { listProducts } from './catalog.js';
+import { applyBundles } from './bundles.js';
 
 export const MAX_QUANTITY = 999;
 export const MAX_PRODUCTS = 20;
@@ -48,5 +49,7 @@ export function priceCart(items, products = listProducts()) {
     };
   });
   const subtotalCents = lines.reduce((sum, l) => sum + l.lineTotalCents, 0);
-  return { lines, subtotalCents, totalCents: subtotalCents };
+  // Feature 006 (BR-BN-4): total = subtotal − bundle savings.
+  const { bundles, savingsCents, suggestions } = applyBundles(lines);
+  return { lines, subtotalCents, bundles, savingsCents, totalCents: subtotalCents - savingsCents, suggestions };
 }
