@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beauty Advisor · Shade Finder</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Beauty Advisor</h1>
+    <nav><a href="/">Catalog</a><a href="/shade-finder.html">Shade Finder</a></nav>
+  </header>
+  <main>
+    <div class="eyebrow">Feature 002 · Shade Finder</div>
+    <h2>Find your foundation match</h2>
+    <form class="panel" id="finder">
+      <label for="depth">Skin depth: <span id="depth-value">5</span> <span id="depth-word"></span></label>
+      <input type="range" id="depth" name="depth" min="1" max="10" step="0.5" value="5" />
+      <label>Undertone</label>
+      <div class="filters" id="undertones">
+        <button type="button" name="undertone" value="cool">Cool</button>
+        <button type="button" name="undertone" value="neutral" class="active">Neutral</button>
+        <button type="button" name="undertone" value="warm">Warm</button>
+      </div>
+      <button class="cta" type="submit">Find my shades</button>
+      <div class="error" id="error" hidden></div>
+    </form>
+    <div class="notice" id="consultation" hidden>
+      Your closest shades are a little further from your selection than we would like.
+      An in-store beauty advisor can help you find your match.
+    </div>
+    <div class="grid" id="results"></div>
+  </main>
+  <script type="module">
+    import { shadeColor } from '/shade-color.js';
+    const form = document.getElementById('finder');
+    const depth = document.getElementById('depth');
+    const depthValue = document.getElementById('depth-value');
+    const depthWord = document.getElementById('depth-word');
+    const undertones = document.getElementById('undertones');
+    const error = document.getElementById('error');
+    const consultation = document.getElementById('consultation');
+    const results = document.getElementById('results');
+    let undertone = 'neutral';
+
+    function showDepth() {
+      const d = Number(depth.value);
+      depthValue.textContent = d;
+      depthWord.textContent = d <= 3.5 ? '(lighter)' : d <= 6.5 ? '(medium)' : '(deeper)';
+    }
+    depth.addEventListener('input', showDepth);
+    showDepth();
+
+    undertones.addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      undertone = b.value;
+      [...undertones.children].forEach((c) => c.classList.toggle('active', c === b));
+    });
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function card(m, rank) {
+      const c = el('div', 'card');
+      c.appendChild(el('div', 'cat', `#${rank} · ${m.confidence} match`));
+      const sw = el('div', 'swatches');
+      const dot = el('span', 'swatch');
+      dot.style.width = dot.style.height = '48px';
+      dot.style.background = shadeColor(m.depth, m.undertone);
+      sw.appendChild(dot);
+      c.appendChild(sw);
+      c.appendChild(el('h3', '', m.name));
+      c.appendChild(el('p', '', `${m.productName} · depth ${m.depth} · ${m.undertone} undertone`));
+      return c;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      error.hidden = true;
+      consultation.hidden = true;
+      results.replaceChildren();
+      try {
+        const res = await fetch('/api/shade-match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ depth: Number(depth.value), undertone }),
+        });
+        const body = await res.json();
+        if (!res.ok) {
+          error.textContent = Object.values(body.fields || {}).join(' ') || 'Something went wrong. Please try again.';
+          error.hidden = false;
+          return;
+        }
+        consultation.hidden = !body.consultation;
+        body.matches.forEach((m, i) => results.appendChild(card(m, i + 1)));
+      } catch {
+        error.textContent = 'Something went wrong. Please try again.';
+        error.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

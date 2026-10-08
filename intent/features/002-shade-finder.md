@@ -1,6 +1,6 @@
 # Feature 002: Shade Finder
 
-**Status:** In progress (Day 04 lab) · **Team:** Complexion squad
+**Status:** Done · Evidence: `evidence/002-shade-finder/` · **Team:** Complexion squad
 
 ## Story
 As a shopper choosing a foundation online, I want to enter my skin depth and undertone
