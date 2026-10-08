@@ -19,3 +19,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 |----|---------|--------|
 | 001 | [Product Catalog](features/001-product-catalog.md) | Done (see `evidence/001-product-catalog/`) |
 | 002 | [Shade Finder](features/002-shade-finder.md) | Done (see `evidence/002-shade-finder/`) |
+| 003 | [Beauty Home](features/003-beauty-home.md) | Done (see `evidence/003-beauty-home/`) |

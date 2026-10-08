@@ -11,7 +11,22 @@
     <h1>Beauty Advisor</h1>
     <nav><a href="/">Catalog</a><a id="shade-link" href="/shade-finder.html" hidden>Shade Finder</a></nav>
   </header>
-  <main>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="eyebrow">Your beauty finder</div>
+        <h2>Find the foundation shade that matches you.</h2>
+        <p>Tell us your skin depth and undertone, and see your three closest shades, lighter to deeper.</p>
+        <a class="cta" href="/shade-finder.html">Find my shade</a>
+        <a class="quiet-link" href="#collection">Shop the collection</a>
+        <div class="swatches" id="hero-shades" aria-hidden="true"></div>
+      </div>
+      <div class="hero-art">
+        <img src="/hero.svg" alt="Illustration of three women with lighter, medium and deeper skin" />
+      </div>
+    </div>
+  </section>
+  <main id="collection">
     <div class="eyebrow">Feature 001 · Product Catalog</div>
     <h2>Shop the collection</h2>
     <div class="filters" id="filters"></div>
@@ -51,6 +66,15 @@
       filters.appendChild(b);
     });
     load('all');
+    // Hero: one swatch per foundation shade, lighter to deeper.
+    fetch('/api/products?category=foundation').then((r) => r.json()).then(({ products }) => {
+      const row = document.getElementById('hero-shades');
+      products.flatMap((p) => p.shades || []).sort((a, b) => a.depth - b.depth).forEach((s) => {
+        const d = document.createElement('span');
+        d.className = 'swatch'; d.style.background = shadeColor(s.depth, s.undertone);
+        row.appendChild(d);
+      });
+    });
     // Shade Finder link appears once Feature 002 is built.
     fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>
