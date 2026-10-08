@@ -22,3 +22,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 003 | [Beauty Home](features/003-beauty-home.md) | Done (see `evidence/003-beauty-home/`) |
 | 004 | [Shade Try-On](features/004-shade-try-on.md) | Done (see `evidence/004-shade-try-on/`) |
 | 005 | [Bag](features/005-cart.md) | Done (see `evidence/005-cart/`) |
+| 006 | [Bundles](features/006-bundles.md) | Done (see `evidence/006-bundles/`) |

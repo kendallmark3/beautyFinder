@@ -29,6 +29,10 @@
       </div>
     </div>
   </section>
+  <section class="bundles">
+    <div class="eyebrow">Bundle and save</div>
+    <div class="bundle-cards" id="bundles"></div>
+  </section>
   <main id="collection">
     <div class="eyebrow">Feature 001 · Product Catalog</div>
     <h2>Shop the collection</h2>
@@ -115,6 +119,22 @@
       tryOn.pick(tryOn.index);
       addToBag({ productId: s.productId, name: s.productName, shadeCode: s.code, shadeName: s.name, depth: s.depth, undertone: s.undertone }, addShade);
     };
+    // Bundles on offer (Feature 006). Names and percentages come from the server.
+    fetch('/api/bundles').then((r) => r.json()).then(({ bundles }) => {
+      const row = document.getElementById('bundles');
+      for (const b of bundles) {
+        const c = document.createElement('div');
+        c.className = 'bundle-card';
+        const pct = document.createElement('div');
+        pct.className = 'pct'; pct.textContent = `${b.percentOff}% off`;
+        const name = document.createElement('h3');
+        name.textContent = b.name;
+        const what = document.createElement('p');
+        what.textContent = `${b.categories.join(' + ')}, bought together`;
+        c.append(pct, name, what);
+        row.appendChild(c);
+      }
+    });
     // Shade Finder link appears once Feature 002 is built.
     fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>

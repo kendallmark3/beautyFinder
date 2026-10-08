@@ -22,8 +22,10 @@
     <div class="panel" id="bag" hidden>
       <div id="lines"></div>
       <div class="error" id="error" hidden></div>
+      <div id="suggestions"></div>
       <div class="summary" id="summary">
         <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
+        <div id="savings"></div>
         <div class="row total"><span>Total</span><span id="total"></span></div>
         <div class="fine">Tax and shipping are not included in this demo.</div>
         <button class="cta" type="button" id="checkout">Checkout</button>
@@ -98,6 +100,19 @@
         $('lines').replaceChildren(...lines.map((l) => row(l, unit.get(l.productId))));
         $('subtotal').textContent = formatMoney(priced.subtotalCents);
         $('total').textContent = formatMoney(priced.totalCents);
+        // Feature 006: the server decides bundles; this only displays them.
+        $('savings').replaceChildren(...priced.bundles.map((b) => {
+          const r = el('div', 'row saving');
+          r.append(el('span', '', `${b.name} · ${b.percentOff}% off the set`), el('span', '', `−${formatMoney(b.savingCents)}`));
+          return r;
+        }));
+        $('suggestions').replaceChildren(...priced.suggestions.map((s) => {
+          const n = el('div', 'notice', `Add a ${s.missingCategory} to make a ${s.name} and save ${s.percentOff}% on the set. `);
+          const a = el('a', '', 'Shop the collection');
+          a.href = '/#collection';
+          n.appendChild(a);
+          return n;
+        }));
         $('summary').hidden = false;
       } catch {
         $('summary').hidden = true;
