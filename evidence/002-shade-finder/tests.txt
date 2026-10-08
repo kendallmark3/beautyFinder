@@ -1,0 +1,18 @@
+✔ AC-1: GET /api/products returns the full catalog (16.869666ms)
+✔ AC-2: ?category= filters products (case-insensitive) (1.564125ms)
+✔ AC-3: unknown category returns 200 with an empty list (1.359042ms)
+✔ AC-4: every foundation shade has code, name, depth (1-10) and undertone (0.640042ms)
+✔ AC-1: a valid request returns exactly 3 shades, best match first (23.967292ms)
+✔ AC-2: at equal depth distance, the shopper's undertone ranks first (0.124375ms)
+✔ AC-3: invalid input returns 400 with a message per invalid field (3.220541ms)
+✔ AC-4: when the best match scores above 1.5, consultation is true (0.1055ms)
+✔ AC-5: skin inputs are never written to logs or storage (4.047667ms)
+✔ AC-6: /shade-finder.html offers depth and undertone and shows results and the consultation notice (2.504666ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 133.658083
