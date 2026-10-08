@@ -1,0 +1,31 @@
+✔ AC-1: GET /api/products returns the full catalog (18.712833ms)
+✔ AC-2: ?category= filters products (case-insensitive) (2.007792ms)
+✔ AC-3: unknown category returns 200 with an empty list (1.461042ms)
+✔ AC-4: every foundation shade has code, name, depth (1-10) and undertone (0.766417ms)
+✔ AC-1: / shows a hero with a headline and a link to the Shade Finder (19.222334ms)
+✔ AC-2: /hero.svg is served as an SVG image and shown with alternative text (3.373625ms)
+✔ AC-3: the shared stylesheet fills the page with a new background colour (2.431667ms)
+✔ AC-4: the catalog filters and product grid are still on the front screen (1.664958ms)
+✔ AC-5: the front screen and the illustration load nothing from another site (5.020208ms)
+✔ AC-6: hero copy never uses "perfect" (4.943875ms)
+✔ AC-1: a valid request returns exactly 3 shades, best match first (27.268458ms)
+✔ AC-2: at equal depth distance, the shopper's undertone ranks first (0.146583ms)
+✔ AC-3: invalid input returns 400 with a message per invalid field (3.965ms)
+✔ AC-4: when the best match scores above 1.5, consultation is true (0.125125ms)
+✔ AC-5: skin inputs are never written to logs or storage (3.884125ms)
+✔ AC-6: /shade-finder.html offers depth and undertone and shows results and the consultation notice (3.497541ms)
+✔ AC-1: every foundation shade is offered as a button labelled with its name (21.193708ms)
+✔ AC-2: picking a shade paints the model with that shade's shadeColor and names it (0.201916ms)
+✔ AC-3: until a shade is picked the model steps lighter to deeper and wraps; picking stops it (0.149584ms)
+✔ AC-4: with reduced motion nothing auto-cycles or animates, and picking still works (4.822084ms)
+✔ AC-5: /hero.svg keeps its original colours as defaults when no script runs (3.928417ms)
+✔ AC-6: the picked shade is never logged, stored, or sent (4.186375ms)
+✔ AC-7: try-on copy calls itself a preview and never uses "perfect" (2.950875ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 147.949292

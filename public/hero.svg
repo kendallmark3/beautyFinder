@@ -10,8 +10,8 @@
   </defs>
 
   <path d="M40,520 V250 a220,220 0 0 1 440,0 V520 Z" fill="#e8bfa9"/>
-  <circle cx="412" cy="92" r="34" fill="#c9a36a" opacity=".55"/>
-  <circle cx="92" cy="130" r="10" fill="#c9a36a" opacity=".55"/>
+  <circle class="float" cx="412" cy="92" r="34" fill="#c9a36a" opacity=".55"/>
+  <circle class="float slow" cx="92" cy="130" r="10" fill="#c9a36a" opacity=".55"/>
 
   <!-- lighter skin, long straight hair -->
   <g transform="translate(138,262) scale(.86)">
@@ -38,12 +38,12 @@
     <use href="#face"/>
   </g>
 
-  <!-- medium skin, hair in a bun -->
+  <!-- medium skin, hair in a bun. Feature 004 repaints this model through the skin custom properties. -->
   <g transform="translate(262,292) scale(1.08)">
     <circle cy="-100" r="32" fill="#2b1a14"/>
     <use href="#bust" fill="#111"/>
-    <use href="#neckline" fill="hsl(32, 52%, 50%)"/>
-    <ellipse rx="56" ry="70" fill="hsl(32, 52%, 55%)"/>
+    <use href="#neckline" class="tryon-skin" style="fill:var(--skin-shadow, hsl(32, 52%, 50%))"/>
+    <ellipse rx="56" ry="70" class="tryon-skin" style="fill:var(--skin, hsl(32, 52%, 55%))"/>
     <path d="M-58,-6 C-64,-86 64,-86 58,-6 C44,-50 -44,-50 -58,-6 Z" fill="#2b1a14"/>
     <use href="#face"/>
     <circle cx="-58" cy="26" r="5" fill="#c9a36a"/>
