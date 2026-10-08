@@ -19,7 +19,9 @@
         <p>Tell us your skin depth and undertone, and see your three closest shades, lighter to deeper.</p>
         <a class="cta" href="/shade-finder.html">Find my shade</a>
         <a class="quiet-link" href="#collection">Shop the collection</a>
-        <div class="swatches" id="hero-shades" aria-hidden="true"></div>
+        <div class="tryon-hint">Tap a shade to preview it on the model.</div>
+        <div class="swatches" id="hero-shades" role="group" aria-label="Preview a foundation shade"></div>
+        <div class="tryon-label" id="tryon-label"></div>
       </div>
       <div class="hero-art">
         <img src="/hero.svg" alt="Illustration of three women with lighter, medium and deeper skin" />
@@ -34,6 +36,7 @@
   </main>
   <script type="module">
     import { shadeColor } from '/shade-color.js';
+    import { foundationShades, mountTryOn } from '/try-on.js';
     const cats = ['all', 'foundation', 'serum', 'mascara', 'lipstick'];
     const filters = document.getElementById('filters');
     const grid = document.getElementById('grid');
@@ -66,15 +69,20 @@
       filters.appendChild(b);
     });
     load('all');
-    // Hero: one swatch per foundation shade, lighter to deeper.
-    fetch('/api/products?category=foundation').then((r) => r.json()).then(({ products }) => {
-      const row = document.getElementById('hero-shades');
-      products.flatMap((p) => p.shades || []).sort((a, b) => a.depth - b.depth).forEach((s) => {
-        const d = document.createElement('span');
-        d.className = 'swatch'; d.style.background = shadeColor(s.depth, s.undertone);
-        row.appendChild(d);
-      });
-    });
+    // Hero try-on (Feature 004). The illustration is swapped in as inline SVG so it can be repainted.
+    const art = document.querySelector('.hero-art');
+    const inlineArt = fetch('/hero.svg').then((r) => r.text()).then((t) => {
+      const svg = new DOMParser().parseFromString(t, 'image/svg+xml').documentElement;
+      if (svg.nodeName === 'svg') art.replaceChildren(svg);
+    }).catch(() => {});
+    const catalog = fetch('/api/products?category=foundation').then((r) => r.json());
+    Promise.all([catalog, inlineArt]).then(([{ products }]) => mountTryOn({
+      row: document.getElementById('hero-shades'),
+      label: document.getElementById('tryon-label'),
+      art,
+      shades: foundationShades(products),
+      reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+    }));
     // Shade Finder link appears once Feature 002 is built.
     fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>

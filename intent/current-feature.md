@@ -1,9 +1,6 @@
 # Current Feature
 
-**Active:** none. Features 001 to 003 are done.
+**Active:** [`intent/features/004-shade-try-on.md`](features/004-shade-try-on.md) (draft: plan not yet approved)
 
-**Last completed:** [`intent/features/003-beauty-home.md`](features/003-beauty-home.md)
-
-Claude: there is no active feature. Do not start building until this pointer names one.
-When a feature is done and its
+Claude: read that file in full before planning. When a feature is done and its
 evidence pack is complete, the team updates this pointer to the next feature.
