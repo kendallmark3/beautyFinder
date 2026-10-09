@@ -26,3 +26,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 007 | [Beauty Discovery](features/007-beauty-discovery.md) | Done (see `evidence/007-beauty-discovery/`) |
 | 008 | [Real Photography](features/008-real-photography.md) | Done (see `evidence/008-real-photography/`) |
 | 009 | [Navigation Home](features/009-navigation.md) | Done (see `evidence/009-navigation/`) |
+| 010 | [Balanced Layout](features/010-balanced-layout.md) | Done (see `evidence/010-balanced-layout/`) |
