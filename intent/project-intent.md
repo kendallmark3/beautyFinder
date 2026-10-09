@@ -31,3 +31,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 012 | [Hardening](features/012-hardening.md) | Done (see `evidence/012-hardening/`) |
 | 013 | [Guided Shade Experience](features/013-guided-shade-experience.md) (its text is titled "Feature 007"; filed as 013 because 007 was taken) | Built; awaiting human visual review (see `evidence/013-guided-shade-experience/`) |
 | 014 | [Bag Experience](features/014-bag-experience.md) | Done (see `evidence/014-bag-experience/`) |
+| 015 | [Curated Recommendations](features/015-curated-recommendations.md) | Done (see `evidence/015-curated-recommendations/`) |

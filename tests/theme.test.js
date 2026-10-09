@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createServer } from '../src/server.js';
 
 let server, base;
-const PAGES = ['/', '/discover.html', '/shade-finder.html', '/cart.html', '/credits.html'];
+const PAGES = ['/', '/discover.html', '/shade-finder.html', '/cart.html', '/credits.html', '/recommendations.html'];
 before(async () => {
   server = await createServer();
   await new Promise((r) => server.listen(0, r));

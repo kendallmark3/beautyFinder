@@ -15,7 +15,7 @@ before(async () => {
 after(() => server.close());
 
 const text = async (p) => (await fetch(`${base}${p}`)).text();
-const PAGES = ['/', '/discover.html', '/shade-finder.html', '/cart.html', '/credits.html'];
+const PAGES = ['/', '/discover.html', '/shade-finder.html', '/cart.html', '/credits.html', '/recommendations.html'];
 const publicDir = new URL('../public/', import.meta.url);
 
 test('AC-1: the hero and the band show photographs of women, each with alternative text', async () => {

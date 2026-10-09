@@ -1,0 +1,12 @@
+/* Feature 015: Curated Recommendations. Page width, gutter and background come from styles.css. */
+.recommendations-page { text-align: center; }
+.recommendations-page h2 { font-size: 44px; margin-bottom: 12px; }
+.picks-lede { max-width: 56ch; margin: 0 auto 24px; font-size: 16px; line-height: 1.5; color: #4a3b33; }
+.pick { padding: 24px; }
+.pick .cat { color: #b57a1a; }
+.pick h3 { font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 400; }
+.pick .why { margin-bottom: 8px; font-weight: 600; color: #111; }
+@media (max-width: 760px) {
+  .recommendations-page h2 { font-size: 34px; }
+  .pick { max-width: none; }
+}

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createServer } from '../src/server.js';
 
 let server, base;
-const PAGES = { '/': '/', '/discover.html': '/discover.html', '/shade-finder.html': '/shade-finder.html', '/cart.html': '/cart.html', '/credits.html': null };
+const PAGES = { '/': '/', '/discover.html': '/discover.html', '/shade-finder.html': '/shade-finder.html', '/cart.html': '/cart.html', '/credits.html': null, '/recommendations.html': null };
 const headers = {};
 before(async () => {
   server = await createServer();
