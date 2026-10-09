@@ -2,6 +2,8 @@
 
 **Status:** Done · Evidence: `evidence/005-cart/` · **Team:** Commerce squad
 
+**Later changes:** Feature 006 added bundle results to the pricing answer. Feature 014 redesigned the bag page and replaced the bare checkout notice with a checkout preview; checkout is still a demo stop. See `intent/features/014-bag-experience.md`. The text below is as written at the time.
+
 ## Story
 As a shopper who has found a shade or a product I like, I want to add it to a bag and see
 what it costs, so that I can go from discovering to buying.
