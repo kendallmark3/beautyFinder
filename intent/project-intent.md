@@ -29,3 +29,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 010 | [Balanced Layout](features/010-balanced-layout.md) | Done (see `evidence/010-balanced-layout/`) |
 | 011 | [One Background](features/011-one-background.md) | Done (see `evidence/011-one-background/`) |
 | 012 | [Hardening](features/012-hardening.md) | Done (see `evidence/012-hardening/`) |
+| 013 | [Guided Shade Experience](features/Feature7.md) (titled "Feature 007" by its author; filed as 013 because 007 was taken) | Built; awaiting human visual review (see `evidence/013-guided-shade-experience/`) |

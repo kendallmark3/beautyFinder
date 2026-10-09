@@ -5,61 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Beauty Advisor · Shade Finder</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/shade-finder.css" />
 </head>
 <body>
   <header>
     <h1><a class="brand" href="/">Beauty Advisor</a></h1>
     <nav aria-label="Main"><a href="/">Home</a><a href="/discover.html">Discover</a><a href="/shade-finder.html" aria-current="page">Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
   </header>
-  <main>
-    <div class="eyebrow">Feature 002 · Shade Finder</div>
-    <h2>Find your foundation match</h2>
-    <form class="panel" id="finder">
-      <label for="depth">Skin depth: <span id="depth-value">5</span> <span id="depth-word"></span></label>
-      <input type="range" id="depth" name="depth" min="1" max="10" step="0.5" value="5" />
-      <label>Undertone</label>
-      <div class="filters" id="undertones">
-        <button type="button" name="undertone" value="cool">Cool</button>
-        <button type="button" name="undertone" value="neutral" class="active">Neutral</button>
-        <button type="button" name="undertone" value="warm">Warm</button>
+  <main class="gs">
+    <div class="gs-stage">
+      <div class="gs-photo" id="photo"></div>
+      <div class="gs-compare">
+        <div class="gs-disc-wrap">
+          <span class="gs-disc empty" id="you-disc"></span>
+          <small>Your complexion</small>
+          <b id="you-label">Choose your depth</b>
+        </div>
+        <div class="gs-disc-wrap" id="match-wrap" hidden>
+          <span class="gs-disc" id="match-disc"></span>
+          <small>Your closest match</small>
+          <b id="match-label"></b>
+        </div>
       </div>
-      <button class="cta" type="submit">Find my shades</button>
-      <div class="error" id="error" hidden></div>
-    </form>
-    <div class="notice" id="consultation" hidden>
-      Your closest shades are a little further from your selection than we would like.
-      An in-store beauty advisor can help you find your match.
+      <p class="gs-note">Shown beside a model with a similar skin depth. A photo cannot show a shade exactly.</p>
     </div>
-    <div class="grid" id="results"></div>
+
+    <div class="gs-panel">
+      <div class="eyebrow">Shade Finder</div>
+      <h2>Find your foundation match</h2>
+      <p class="gs-lede">Three steps. Watch your complexion take shape on the left as you choose, then see the shade that sits closest to it.</p>
+      <ol class="gs-steps">
+        <li class="gs-step" id="step-depth">
+          <h3><span>1</span>How light or deep is your skin?</h3>
+          <p>Tap the tone closest to your own, or drag the slider.</p>
+          <div class="gs-ramp" id="ramp" role="group" aria-label="Skin depth, lighter to deeper"></div>
+          <div class="gs-ends"><span>Lighter</span><span>Deeper</span></div>
+          <input type="range" id="depth" name="depth" min="1" max="10" step="0.5" value="5" aria-label="Skin depth, 1 lightest to 10 deepest" />
+        </li>
+        <li class="gs-step locked" id="step-undertone">
+          <h3><span>2</span>What colour comes through?</h3>
+          <p>There are no wrong answers. Pick what sounds most like you.</p>
+          <div class="gs-tones" id="undertones" role="group" aria-label="Undertone">
+            <button type="button" name="undertone" value="cool" aria-pressed="false"><i></i><b>Rosy</b><small>Silver jewelry flatters me; I flush pink.</small></button>
+            <button type="button" name="undertone" value="neutral" aria-pressed="false"><i></i><b>In between</b><small>Both metals work, or I am not sure.</small></button>
+            <button type="button" name="undertone" value="warm" aria-pressed="false"><i></i><b>Golden</b><small>Gold jewelry flatters me; I tan easily.</small></button>
+          </div>
+        </li>
+        <li class="gs-step locked" id="step-match">
+          <h3><span>3</span>Meet your match</h3>
+          <p id="match-prompt">We compare your complexion with all eighteen shades.</p>
+          <button class="cta" type="button" id="reveal">Reveal my match</button>
+          <div class="error" id="error" hidden></div>
+          <div class="notice" id="consultation" hidden>
+            Your closest shades are a little further from your selection than we would like.
+            An in-store beauty advisor can help you find your match.
+          </div>
+          <div id="results" aria-live="polite"></div>
+          <div class="gs-next" id="next" hidden>
+            <a class="cta" href="/cart.html">View my bag</a>
+            <a class="quiet-link" href="/#collection">Complete the look with a bundle</a>
+          </div>
+        </li>
+      </ol>
+    </div>
   </main>
   <script type="module">
     import { shadeColor } from '/shade-color.js';
-    import { addToBag, updateBagCount } from '/cart.js';
+    import { PHOTO_MODELS, nearestModel } from '/models.js';
+    import { DEPTH_STOPS, complexion, complexionLabel, confidenceLine, difference, presentMatches } from '/guided-shade.js';
+    import { addToBag, formatMoney, updateBagCount } from '/cart.js';
     updateBagCount();
-    const form = document.getElementById('finder');
-    const depth = document.getElementById('depth');
-    const depthValue = document.getElementById('depth-value');
-    const depthWord = document.getElementById('depth-word');
-    const undertones = document.getElementById('undertones');
-    const error = document.getElementById('error');
-    const consultation = document.getElementById('consultation');
-    const results = document.getElementById('results');
-    let undertone = 'neutral';
-
-    function showDepth() {
-      const d = Number(depth.value);
-      depthValue.textContent = d;
-      depthWord.textContent = d <= 3.5 ? '(lighter)' : d <= 6.5 ? '(medium)' : '(deeper)';
-    }
-    depth.addEventListener('input', showDepth);
-    showDepth();
-
-    undertones.addEventListener('click', (e) => {
-      const b = e.target.closest('button');
-      if (!b) return;
-      undertone = b.value;
-      [...undertones.children].forEach((c) => c.classList.toggle('active', c === b));
-    });
+    const $ = (id) => document.getElementById(id);
+    // Nothing is chosen for the shopper: depth and undertone start empty.
+    const state = { depth: null, undertone: null, revealed: false };
+    let token = 0, priceCents = null;
 
     function el(tag, className, text) {
       const node = document.createElement(tag);
@@ -67,51 +86,147 @@
       if (text !== undefined) node.textContent = text;
       return node;
     }
+    const add = (m, button) => addToBag({ productId: m.productId, name: m.productName, shadeCode: m.code, shadeName: m.name, depth: m.depth, undertone: m.undertone }, button);
 
-    function card(m, rank) {
-      const c = el('div', 'card');
-      c.appendChild(el('div', 'cat', `#${rank} · ${m.confidence} match`));
-      const sw = el('div', 'swatches');
-      const dot = el('span', 'swatch');
-      dot.style.width = dot.style.height = '48px';
-      dot.style.background = shadeColor(m.depth, m.undertone);
-      sw.appendChild(dot);
-      c.appendChild(sw);
-      c.appendChild(el('h3', '', m.name));
-      c.appendChild(el('p', '', `${m.productName} · depth ${m.depth} · ${m.undertone} undertone`));
-      const buy = el('div', 'buy');
-      const add = el('button', 'add', 'Add to bag');
-      add.type = 'button';
-      add.onclick = () => addToBag({ productId: m.productId, name: m.productName, shadeCode: m.code, shadeName: m.name, depth: m.depth, undertone: m.undertone }, add);
-      buy.appendChild(add);
-      c.appendChild(buy);
-      return c;
+    // The foundation's price, for the recommendation. A fixed address; no selection is sent.
+    fetch('/api/products?category=foundation').then((r) => r.json()).then(({ products }) => { priceCents = products[0]?.priceCents ?? null; }).catch(() => {});
+
+    // Stage: every model's photo is stacked; the one closest to the chosen depth fades in.
+    $('photo').append(...PHOTO_MODELS.map((m, i) => {
+      const img = el('img', i === 1 ? 'on' : '');
+      img.src = m.src; img.alt = m.alt; img.dataset.model = m.id; img.style.objectPosition = m.focus;
+      return img;
+    }));
+
+    const rampButtons = DEPTH_STOPS.map((d) => {
+      const b = el('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', `Depth ${d}`);
+      b.setAttribute('aria-pressed', 'false');
+      b.onclick = () => setDepth(d);
+      $('ramp').appendChild(b);
+      return b;
+    });
+    const toneButtons = [...$('undertones').querySelectorAll('button[name="undertone"]')];
+    toneButtons.forEach((b) => { b.onclick = () => setUndertone(b.value); });
+
+    // Everything that shows the shopper's complexion is repainted from the two choices.
+    function paint() {
+      const tone = state.undertone;
+      rampButtons.forEach((b, i) => {
+        const d = DEPTH_STOPS[i];
+        b.style.background = complexion(d, tone);
+        b.classList.toggle('on', d === state.depth);
+        b.setAttribute('aria-pressed', String(d === state.depth));
+      });
+      toneButtons.forEach((b) => {
+        b.querySelector('i').style.background = shadeColor(state.depth ?? 5, b.value);
+        b.classList.toggle('on', b.value === tone);
+        b.setAttribute('aria-pressed', String(b.value === tone));
+      });
+      if (state.depth === null) return;
+      const you = $('you-disc');
+      you.classList.remove('empty', 'pop');
+      void you.offsetWidth;
+      you.classList.add('pop');
+      you.style.background = complexion(state.depth, tone);
+      $('you-label').textContent = complexionLabel(state.depth, tone);
+      const model = nearestModel(state.depth);
+      for (const img of $('photo').children) img.classList.toggle('on', img.dataset.model === model.id);
+      $('step-depth').classList.add('done');
+      $('step-undertone').classList.remove('locked');
+      $('step-undertone').classList.toggle('done', tone !== null);
+      $('step-match').classList.toggle('locked', tone === null);
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      error.hidden = true;
-      consultation.hidden = true;
-      results.replaceChildren();
+    function setDepth(d) {
+      state.depth = d;
+      $('depth').value = d;
+      paint();
+      if (state.revealed) match();
+    }
+    function setUndertone(u) {
+      state.undertone = u;
+      paint();
+      if (state.revealed) match();
+    }
+    $('depth').addEventListener('input', () => setDepth(Number($('depth').value)));
+
+    function primaryCard(m) {
+      const card = el('div', 'gs-primary');
+      card.append(el('span', 'eyebrow', 'Your closest match'), el('h4', '', m.name), el('div', 'conf', confidenceLine(m.confidence)));
+      card.appendChild(el('p', 'why', `${m.productName}. Compared with your selection it is ${difference(state, m)}.`));
+      // Her complexion beside the shade, so the recommendation explains itself wherever it is read.
+      const duo = el('div', 'gs-duo');
+      for (const [colour, label] of [[complexion(state.depth, state.undertone), 'You'], [shadeColor(m.depth, m.undertone), m.name]]) {
+        const item = el('span');
+        const dot = el('i');
+        dot.style.background = colour;
+        item.append(dot, el('small', '', label));
+        duo.appendChild(item);
+      }
+      card.appendChild(duo);
+      const buy = el('div', 'buy');
+      const b = el('button', 'cta', 'Add to bag');
+      b.type = 'button';
+      b.onclick = () => add(m, b);
+      buy.appendChild(b);
+      if (priceCents !== null) buy.appendChild(el('span', 'price', formatMoney(priceCents)));
+      card.appendChild(buy);
+      return card;
+    }
+    function alternativeRow(m) {
+      const row = el('div', 'gs-alt');
+      const dot = el('span', 'swatch');
+      dot.style.background = shadeColor(m.depth, m.undertone);
+      const words = el('div');
+      words.append(el('b', '', m.name), el('small', '', `${m.confidence} match · ${difference(state, m)}`));
+      const b = el('button', 'add', 'Add to bag');
+      b.type = 'button';
+      b.onclick = () => add(m, b);
+      row.append(dot, words, b);
+      return row;
+    }
+
+    async function match() {
+      const mine = ++token;
+      $('error').hidden = true;
       try {
+        // The existing matching rules decide. Only depth and undertone are sent (SEC-2).
         const res = await fetch('/api/shade-match', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ depth: Number(depth.value), undertone }),
+          body: JSON.stringify({ depth: state.depth, undertone: state.undertone }),
         });
         const body = await res.json();
-        if (!res.ok) {
-          error.textContent = Object.values(body.fields || {}).join(' ') || 'Something went wrong. Please try again.';
-          error.hidden = false;
-          return;
-        }
-        consultation.hidden = !body.consultation;
-        body.matches.forEach((m, i) => results.appendChild(card(m, i + 1)));
+        if (mine !== token) return;
+        if (!res.ok) throw new Error('match failed');
+        const { primary, alternatives, consultation } = presentMatches(body);
+        $('consultation').hidden = !consultation;
+        const nodes = [primaryCard(primary)];
+        if (alternatives.length) nodes.push(el('div', 'gs-alts-title', 'Also close'), ...alternatives.map(alternativeRow));
+        $('results').replaceChildren(...nodes);
+        $('match-disc').style.background = shadeColor(primary.depth, primary.undertone);
+        $('match-label').textContent = primary.name;
+        $('match-wrap').hidden = false;
+        $('reveal').hidden = true;
+        $('match-prompt').textContent = 'Change your depth or undertone above and your match updates.';
+        $('next').hidden = false;
+        $('step-match').classList.add('done');
       } catch {
-        error.textContent = 'Something went wrong. Please try again.';
-        error.hidden = false;
+        if (mine !== token) return;
+        $('error').textContent = 'We could not find your match just now. Please try again.';
+        $('error').hidden = false;
       }
-    });
+    }
+    $('reveal').onclick = async () => {
+      state.revealed = true;
+      await match();
+      // Bring the recommendation into view the first time; later changes update it in place.
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      $('step-match').scrollIntoView({ behavior: calm, block: 'start' });
+    };
+    paint();
   </script>
 </body>
 </html>
