@@ -25,7 +25,7 @@ test('AC-1: the hero has one primary button, to discovery, and every page links 
   const buttons = [...hero.matchAll(/<a class="cta[^"]*" href="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(buttons, ['/discover.html']);
   for (const path of ['/', '/discover.html', '/shade-finder.html', '/cart.html']) {
-    assert.match(header(await text(path)), /<a href="\/discover\.html">Discover<\/a>/, path);
+    assert.match(header(await text(path)), /<a href="\/discover\.html"[^>]*>Discover<\/a>/, path);
   }
   const page = await text('/discover.html');
   assert.match(page, /id="begin"/);
@@ -96,7 +96,7 @@ test('AC-7: the page says what is sent and that the palette is a preview', async
 test('AC-8: the discovery page uses the app\'s name and navigation, and its product buttons are readable', async () => {
   const page = await text('/discover.html');
   const home = await text('/');
-  const name = (html) => header(html).match(/<h1>([^<]+)<\/h1>/)[1];
+  const name = (html) => header(html).match(/<h1><a class="brand" href="\/">([^<]+)<\/a><\/h1>/)[1];
   assert.equal(name(page), name(home));
   for (const href of ['/', '/discover.html', '/shade-finder.html', '/cart.html']) assert.ok(header(page).includes(`href="${href}"`), href);
   const rule = (await text('/discover.css')).match(/\.products \.add \{[^}]*\}/)[0];

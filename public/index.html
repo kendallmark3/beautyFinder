@@ -8,8 +8,8 @@
 </head>
 <body>
   <header>
-    <h1>Beauty Advisor</h1>
-    <nav><a href="/">Catalog</a><a href="/discover.html">Discover</a><a id="shade-link" href="/shade-finder.html" hidden>Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
+    <h1><a class="brand" href="/">Beauty Advisor</a></h1>
+    <nav aria-label="Main"><a href="/" aria-current="page">Home</a><a href="/discover.html">Discover</a><a href="/shade-finder.html">Shade Finder</a><a class="bag-link" href="/cart.html">Bag (<span data-bag-count>0</span>)</a></nav>
   </header>
   <section class="hero">
     <div class="hero-inner">
@@ -158,8 +158,6 @@
         row.appendChild(c);
       }
     });
-    // Shade Finder link appears once Feature 002 is built.
-    fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>
   <footer class="site-footer">Photography from Pexels. The people pictured are stock models and do not endorse this demo or its products. <a href="/credits.html">Photo credits</a></footer>
 </body>
