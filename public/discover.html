@@ -16,14 +16,15 @@
   <section id="welcome" class="welcome">
     <div class="eyebrow">Your beauty finder</div>
     <h2>Discover a look that looks like you.</h2>
-    <p>Pick a model who feels like you, play with colour, glow and shape, and watch the look come to life. Then add the products behind it to your bag.</p>
+    <p>Pick the model closest to your own skin, choose colour, glow and shape, and see your look come together as a palette. Then add the products behind it to your bag.</p>
     <button class="cta" type="button" id="begin">Start my look</button>
     <div class="faces" id="faces-preview" aria-hidden="true"></div>
   </section>
 
   <main id="studio" class="studio" hidden>
     <div class="stage">
-      <div class="model" id="model" aria-live="polite"></div>
+      <div class="model" id="model"></div>
+      <div class="palette" id="palette" aria-live="polite"></div>
       <div class="caption" id="caption"></div>
     </div>
 
@@ -38,26 +39,30 @@
   </main>
 
   <section id="look" class="look" hidden>
-    <div class="look-model" id="look-model"></div>
+    <div>
+      <div class="look-model" id="look-model"></div>
+      <div class="palette" id="look-palette"></div>
+    </div>
     <div class="look-copy">
       <div class="eyebrow">Your completed look</div>
       <h2 id="look-name"></h2>
       <p id="look-summary" class="lede"></p>
       <h3>Why this works for you</h3>
       <p id="look-why"></p>
-      <ul class="picks" id="picks"></ul>
       <h3>What creates it</h3>
       <ul class="products" id="products"></ul>
       <button class="cta" type="button" id="add-look">Add the whole look to my bag</button>
       <a class="quiet-link" href="/cart.html">View bag</a>
       <button class="ghost" type="button" id="tweak">Keep experimenting</button>
-      <p class="privacy" id="preview-note">Lip, cheek and eye colours are a preview on the model. This catalog has one lipstick, without colour choices, and no cheek or eye colour products.</p>
+      <p class="privacy" id="preview-note">The palette is a preview of your choices; nothing in the photograph is altered. This catalog has one lipstick, without colour choices, and no cheek or eye colour products.</p>
       <p class="privacy" id="privacy-note">We do not keep your choices. To match a foundation shade, the skin depth and undertone are sent to our server, which does not log or store them. Anything you add to your bag is kept in this browser tab only.</p>
     </div>
   </section>
 
+  <footer class="site-footer">Photography from Pexels. The people pictured are stock models and do not endorse this demo or its products. <a href="/credits.html">Photo credits</a></footer>
+
   <script type="module">
-    import { MODELS, UNDERTONES, LIPS, EYES, FINISHES, BLUSHES, modelSvg, applyLook, skinFor, lookName, lookSummary, reasoning, lookItems } from '/discover.js';
+    import { MODELS, UNDERTONES, LIPS, EYES, FINISHES, BLUSHES, palette, lookName, lookSummary, reasoning, lookItems } from '/discover.js';
     import { addToBag, formatMoney, updateBagCount } from '/cart.js';
     updateBagCount();
     const $ = (id) => document.getElementById(id);
@@ -66,7 +71,7 @@
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
     const STEPS = [
-      { key: 'model', title: 'Who feels like you?', sub: 'Start with the model closest to your own skin. You can change this any time.' },
+      { key: 'model', title: 'Whose skin is closest to yours?', sub: 'Start with the model closest to your own skin depth. You can change this any time.' },
       { key: 'undertone', title: 'What colour comes through in your skin?', sub: 'No wrong answers. Pick what sounds most like you.' },
       { key: 'finish', title: 'How should your skin look?', sub: 'Choose the finish you love.' },
       { key: 'eyes', title: 'How much do you want your eyes to say?', sub: '' },
@@ -77,18 +82,40 @@
 
     const catalog = fetch('/api/products').then((r) => r.json()).then((d) => { products = d.products; }).catch(() => { products = []; });
 
-    function paint(el) {
-      if (!state.model) return;
-      const skin = skinFor(match?.depth ?? state.depth, match?.undertone ?? state.undertone);
-      applyLook(el, state, skin);
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
     }
-    function mountModel(host) {
-      host.innerHTML = modelSvg(state.model);
-      paint(host);
+    function photo(m) {
+      const img = el('img');
+      img.src = m.src; img.alt = m.alt; img.dataset.model = m.id; img.style.objectPosition = m.focus;
+      return img;
+    }
+
+    // Every model's photo is stacked in the stage; the chosen one fades in.
+    $('model').append(...MODELS.map(photo));
+    function showModel() {
+      for (const img of $('model').children) img.classList.toggle('on', img.dataset.model === state.model?.id);
+    }
+    function drawPalette(host) {
+      host.replaceChildren(...palette(state, match).map((c) => {
+        const chip = el('div', 'chip-row');
+        const dot = el('span', `dot-chip${c.color ? '' : ' none'}${c.finish ? ` ${c.finish}` : ''}`);
+        if (c.color) dot.style.background = c.color;
+        const words = el('span');
+        words.append(el('small', '', c.part), el('b', '', c.value));
+        chip.append(dot, words);
+        return chip;
+      }));
     }
     function repaint() {
-      paint($('model')); paint($('look-model'));
-      $('caption').textContent = state.model ? `${lookSummary(state)}.` : '';
+      if (!state.model) return;
+      showModel();
+      drawPalette($('palette'));
+      drawPalette($('look-palette'));
+      $('caption').textContent = `${lookSummary(state)}.`;
     }
 
     // `matching` settles when the latest request has, so the reveal can wait for it.
@@ -99,34 +126,36 @@
           const res = await fetch('/api/shade-match', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ depth: state.depth, undertone: state.undertone }) });
           const data = await res.json();
           if (mine === token && res.ok) { match = data.matches[0]; repaint(); }
-        } catch { /* the preview still works with the starting complexion */ }
+        } catch { /* the palette still shows the starting complexion */ }
       })();
       return matching;
     }
 
-    function renderProgress() {
-      $('progress').setAttribute('aria-label', `Step ${stepIdx + 1} of ${STEPS.length}`);
-      $('progress').innerHTML = STEPS.map((_, i) => `<span class="dot${i === stepIdx ? ' on' : i < stepIdx ? ' done' : ''}"></span>`).join('');
-    }
-
     function renderStep() {
       const s = STEPS[stepIdx];
-      renderProgress();
-      const box = $('step');
-      box.innerHTML = `<h2>${s.title}</h2>${s.sub ? `<p class="sub">${s.sub}</p>` : ''}<div class="options" role="group" aria-label="${s.title}"></div>`;
-      const opts = box.querySelector('.options');
+      $('progress').setAttribute('aria-label', `Step ${stepIdx + 1} of ${STEPS.length}`);
+      $('progress').replaceChildren(...STEPS.map((_, i) => el('span', `dot${i === stepIdx ? ' on' : i < stepIdx ? ' done' : ''}`)));
+      const opts = el('div', `options${s.key === 'model' ? ' models' : ''}`);
+      opts.setAttribute('role', 'group');
+      opts.setAttribute('aria-label', s.title);
       const items = s.key === 'model' ? MODELS : OPTIONS[s.key];
       for (const o of items) {
-        const b = document.createElement('button');
-        b.type = 'button'; b.className = 'opt';
+        const b = el('button', 'opt');
+        b.type = 'button';
         const selected = s.key === 'model' ? state.model?.id === o.id : state[s.key] === o.id;
         b.setAttribute('aria-pressed', String(selected));
         if (selected) b.classList.add('on');
-        const dot = o.color ? `<i style="background:${o.color}"></i>` : '';
-        b.innerHTML = `${dot}<b>${o.label ?? o.name}</b><small>${o.hint ?? o.blurb ?? ''}</small>`;
+        if (s.key === 'model') b.appendChild(photo(o));
+        else if (o.color) { const i = el('i'); i.style.background = o.color; b.appendChild(i); }
+        b.appendChild(el('b', '', o.label));
+        if (o.hint) b.appendChild(el('small', '', o.hint));
         b.onclick = () => choose(s.key, o);
         opts.appendChild(b);
       }
+      const box = $('step');
+      box.replaceChildren(el('h2', '', s.title));
+      if (s.sub) box.appendChild(el('p', 'sub', s.sub));
+      box.appendChild(opts);
       $('back').hidden = stepIdx === 0;
       $('next').textContent = stepIdx === STEPS.length - 1 ? 'Reveal my look' : 'Next';
       $('next').disabled = !state.model;
@@ -135,7 +164,6 @@
     function choose(key, o) {
       if (key === 'model') {
         state.model = o; state.depth = o.depth; match = null;
-        mountModel($('model'));
         refreshMatch();
       } else {
         state[key] = o.id;
@@ -146,30 +174,26 @@
     }
 
     function showLook() {
-      mountModel($('look-model'));
+      $('look-model').replaceChildren(photo(state.model));
+      $('look-model').firstChild.classList.add('on');
+      drawPalette($('look-palette'));
       $('look-name').textContent = lookName(state);
       $('look-summary').textContent = `${lookSummary(state)}.`;
       $('look-why').textContent = reasoning(state, match);
-      const tone = UNDERTONES.find((u) => u.id === state.undertone);
-      $('picks').innerHTML = [
-        `Model: ${state.model.name}`, `Undertone: ${tone.label}`, `Skin: ${FINISHES.find((f) => f.id === state.finish).label}`,
-        `Eyes: ${EYES.find((f) => f.id === state.eyes).label}`, `Lips: ${LIPS.find((f) => f.id === state.lip).label}`,
-        `Cheeks: ${BLUSHES.find((f) => f.id === state.blush).label}`,
-      ].map((t) => `<li>${t}</li>`).join('');
       const items = lookItems(state, match, products);
       $('add-look').hidden = items.length === 0;
-      const ul = $('products'); ul.innerHTML = '';
-      for (const it of items) {
-        const li = document.createElement('li');
-        li.innerHTML = `<span><b>${it.label}</b><small>${it.role}</small></span><span class="price">${formatMoney(it.product.priceCents)}</span>`;
-        const b = document.createElement('button');
-        b.type = 'button'; b.className = 'add'; b.textContent = 'Add';
+      $('products').replaceChildren(...items.map((it) => {
+        const li = el('li');
+        const words = el('span');
+        words.append(el('b', '', it.label), el('small', '', it.role));
+        const b = el('button', 'add', 'Add');
+        b.type = 'button';
         b.onclick = () => addToBag(it.item, b);
-        li.appendChild(b); ul.appendChild(li);
-      }
+        li.append(words, el('span', 'price', formatMoney(it.product.priceCents)), b);
+        return li;
+      }));
       $('add-look').onclick = () => { items.forEach((it, i) => addToBag(it.item, i === 0 ? $('add-look') : undefined)); };
       $('studio').hidden = true; $('look').hidden = false;
-      paint($('look-model'));
       $('look').scrollIntoView({ behavior: calm });
     }
 
@@ -182,8 +206,7 @@
     $('next').onclick = () => { if (stepIdx < STEPS.length - 1) { stepIdx++; renderStep(); } else Promise.all([catalog, match ? matching : refreshMatch()]).then(showLook); };
     $('back').onclick = () => { stepIdx = Math.max(0, stepIdx - 1); renderStep(); };
     $('tweak').onclick = () => { $('look').hidden = true; $('studio').hidden = false; stepIdx = STEPS.length - 1; renderStep(); repaint(); window.scrollTo({ top: 0, behavior: calm }); };
-    $('faces-preview').innerHTML = MODELS.map((m) => `<div class="mini">${modelSvg(m)}</div>`).join('');
-    document.querySelectorAll('#faces-preview .mini').forEach((el, i) => applyLook(el, { ...state, model: MODELS[i] }, skinFor(MODELS[i].depth, 'neutral')));
+    $('faces-preview').append(...MODELS.map((m) => { const d = el('div', 'mini'); d.appendChild(photo(m)); return d; }));
   </script>
 </body>
 </html>

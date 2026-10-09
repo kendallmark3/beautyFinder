@@ -25,9 +25,24 @@
         <div class="tryon-label" id="tryon-label"></div>
         <button class="cta ghost" type="button" id="tryon-add" hidden>Add this shade to bag</button>
       </div>
-      <div class="hero-art">
-        <img src="/hero.svg" alt="Illustration of three women with lighter, medium and deeper skin" />
+      <div class="hero-art photo" id="hero-art">
+        <img data-model="lighter" src="/photos/model-lighter.jpg" alt="Portrait of a woman with lighter skin" style="object-position:50% 25%" />
+        <img class="on" data-model="light-medium" src="/photos/model-light-medium.jpg" alt="Portrait of a woman with light to medium skin" style="object-position:50% 30%" />
+        <img data-model="medium-deep" src="/photos/model-medium-deep.jpg" alt="Portrait of a woman with medium to deep skin" style="object-position:50% 35%" />
+        <img data-model="deeper" src="/photos/model-deeper.jpg" alt="Portrait of a woman with deeper skin" style="object-position:50% 25%" />
+        <div class="shade-card" id="shade-card" hidden>
+          <span class="chip"></span>
+          <div><b id="shade-card-name"></b><small>Shown beside a model with a similar skin depth. A photo cannot show a shade exactly.</small></div>
+        </div>
       </div>
+    </div>
+  </section>
+  <section class="band">
+    <img src="/photos/group.jpg" alt="Three women with lighter, medium and deeper skin, close together" />
+    <div class="band-copy">
+      <div class="eyebrow">Eighteen shades</div>
+      <h2>From lighter to deeper, with cool, neutral and warm undertones.</h2>
+      <a class="quiet-link" href="/shade-finder.html">Find my shade</a>
     </div>
   </section>
   <section class="bundles">
@@ -44,6 +59,7 @@
     import { shadeColor } from '/shade-color.js';
     import { foundationShades, mountTryOn } from '/try-on.js';
     import { addToBag, formatMoney, updateBagCount } from '/cart.js';
+    import { nearestModel } from '/models.js';
     updateBagCount();
     const cats = ['all', 'foundation', 'serum', 'mascara', 'lipstick'];
     const filters = document.getElementById('filters');
@@ -94,23 +110,29 @@
       filters.appendChild(b);
     });
     load('all');
-    // Hero try-on (Feature 004). The illustration is swapped in as inline SVG so it can be repainted.
-    const art = document.querySelector('.hero-art');
-    const inlineArt = fetch('/hero.svg').then((r) => r.text()).then((t) => {
-      const svg = new DOMParser().parseFromString(t, 'image/svg+xml').documentElement;
-      if (svg.nodeName === 'svg') art.replaceChildren(svg);
-    }).catch(() => {});
+    // Hero try-on (Feature 004). Since Feature 008 a picked shade shows the photo model with the
+    // closest skin depth, and the shade itself on a card; nothing in a photo is recoloured.
+    const art = document.getElementById('hero-art');
+    const photos = [...art.querySelectorAll('img')];
+    const card = document.getElementById('shade-card');
     const catalog = fetch('/api/products?category=foundation').then((r) => r.json());
     const addShade = document.getElementById('tryon-add');
     let tryOn, shown;
-    Promise.all([catalog, inlineArt]).then(([{ products }]) => {
+    catalog.then(({ products }) => {
       tryOn = mountTryOn({
         row: document.getElementById('hero-shades'),
         label: document.getElementById('tryon-label'),
         art,
         shades: foundationShades(products),
         reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
-        onShow: (shade) => { shown = shade; addShade.hidden = false; },
+        onShow: (shade) => {
+          shown = shade;
+          addShade.hidden = false;
+          const model = nearestModel(shade.depth);
+          photos.forEach((img) => img.classList.toggle('on', img.dataset.model === model.id));
+          document.getElementById('shade-card-name').textContent = shade.name;
+          card.hidden = false;
+        },
       });
     });
     // Adding the shade on screen also stops the auto-cycle on it (Feature 005).
@@ -139,5 +161,6 @@
     // Shade Finder link appears once Feature 002 is built.
     fetch('/shade-finder.html', { method: 'HEAD' }).then((r) => { if (r.ok) document.getElementById('shade-link').hidden = false; });
   </script>
+  <footer class="site-footer">Photography from Pexels. The people pictured are stock models and do not endorse this demo or its products. <a href="/credits.html">Photo credits</a></footer>
 </body>
 </html>

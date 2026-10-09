@@ -20,12 +20,13 @@ test('AC-1: / shows a hero with a headline and a link to the Shade Finder', asyn
   assert.match(section, /<a[^>]+href="\/shade-finder\.html"/);
 });
 
-test('AC-2: /hero.svg is served as an SVG image and shown with alternative text', async () => {
-  const res = await fetch(`${base}/hero.svg`);
+test('AC-2: the hero shows a photograph with alternative text (changed by Feature 008)', async () => {
+  const imgs = [...hero(await text('/')).matchAll(/<img[^>]*src="(\/photos\/[^"]+\.jpg)"[^>]*alt="([^"]{10,})"/g)];
+  assert.ok(imgs.length >= 1);
+  const res = await fetch(`${base}${imgs[0][1]}`);
   assert.equal(res.status, 200);
-  assert.equal(res.headers.get('content-type'), 'image/svg+xml');
-  assert.match(await res.text(), /<svg[\s>]/);
-  assert.match(hero(await text('/')), /<img[^>]+src="\/hero\.svg"[^>]+alt="[^"]{10,}"/);
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  assert.deepEqual([...bytes.slice(0, 3)], [0xff, 0xd8, 0xff], 'a JPEG file');
 });
 
 test('AC-3: the shared stylesheet fills the page with a new background colour', async () => {
@@ -43,14 +44,13 @@ test('AC-4: the catalog filters and product grid are still on the front screen',
   assert.match(html, /\/api\/products/);
 });
 
-test('AC-5: the front screen and the illustration load nothing from another site', async () => {
-  for (const path of ['/', '/styles.css', '/hero.svg']) {
-    const body = (await text(path)).replaceAll('xmlns="http://www.w3.org/2000/svg"', '');
+test('AC-5: the front screen loads nothing from another site', async () => {
+  for (const path of ['/', '/styles.css']) {
+    const body = await text(path);
     assert.doesNotMatch(body, /https?:\/\/|url\(\s*['"]?\/\//i, path);
   }
 });
 
 test('AC-6: hero copy never uses "perfect"', async () => {
   assert.doesNotMatch(hero(await text('/')), /perfect/i);
-  assert.doesNotMatch(await text('/hero.svg'), /perfect/i);
 });

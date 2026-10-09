@@ -24,3 +24,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 005 | [Bag](features/005-cart.md) | Done (see `evidence/005-cart/`) |
 | 006 | [Bundles](features/006-bundles.md) | Done (see `evidence/006-bundles/`) |
 | 007 | [Beauty Discovery](features/007-beauty-discovery.md) | Done (see `evidence/007-beauty-discovery/`) |
+| 008 | [Real Photography](features/008-real-photography.md) | Done (see `evidence/008-real-photography/`) |

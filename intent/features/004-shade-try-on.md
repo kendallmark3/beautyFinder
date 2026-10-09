@@ -2,6 +2,8 @@
 
 **Status:** Done · Evidence: `evidence/004-shade-try-on/` · **Team:** Complexion squad
 
+**Later changes:** Feature 005 lets an added shade be kept in the bag. Feature 008 stopped repainting a model: a picked shade is shown on a card beside a photograph, and AC-5 changed. See `intent/features/008-real-photography.md`. The text below is as written at the time.
+
 ## Story
 As a shopper on the front screen, I want to pick a foundation shade and watch the model
 take on that shade, so that finding my shade feels like play and I want to keep going.
