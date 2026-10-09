@@ -2,7 +2,7 @@
 
 **Active:** none. Features 001 to 012 and 014 are done.
 
-**Awaiting human visual review:** [`intent/features/Feature7.md`](features/Feature7.md), built and evidenced as 013. Its review sheet is `evidence/013-guided-shade-experience/review.md`.
+**Awaiting human visual review:** [`intent/features/013-guided-shade-experience.md`](features/013-guided-shade-experience.md), built and evidenced as 013. Its review sheet is `evidence/013-guided-shade-experience/review.md`.
 
 **Last completed:** [`intent/features/014-bag-experience.md`](features/014-bag-experience.md)
 

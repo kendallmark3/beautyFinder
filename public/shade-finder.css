@@ -1,4 +1,4 @@
-/* Guided Shade Experience (intent/features/Feature7.md). Page width, gutter and background come from styles.css. */
+/* Guided Shade Experience (intent/features/013-guided-shade-experience.md). Page width, gutter and background come from styles.css. */
 .gs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
 .gs-stage { position: sticky; top: 92px; }
 .gs-photo { position: relative; aspect-ratio: 4 / 5; max-height: 62vh; width: 100%; overflow: hidden; background: #e8bfa9; box-shadow: 0 24px 60px rgba(120, 60, 30, .22); }
