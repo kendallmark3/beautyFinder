@@ -1,6 +1,6 @@
 # Evidence: Guided Shade Experience
 
-Intent: `intent/features/Feature7.md` (titled "Feature 007: Guided Shade Experience"). Filed here as **013** because 007 was already used by Beauty Discovery; the intent file itself is unchanged.
+Intent: `intent/features/013-guided-shade-experience.md` (titled "Feature 007: Guided Shade Experience"). Filed here as **013** because 007 was already used by Beauty Discovery; the intent file itself is unchanged.
 
 Run: `npm test` (full output in `tests.txt`) · Result: **85 / 85 passing** (79 from Features 001 to 012, 6 new)
 

@@ -1,6 +1,6 @@
 # Human review: Guided Shade Experience
 
-The intent (`intent/features/Feature7.md`) requires a person to review the running experience
+The intent (`intent/features/013-guided-shade-experience.md`) requires a person to review the running experience
 visually. **This has not been done.** The builder is not that person. Open
 http://localhost:3000/shade-finder.html (or the port the app is running on), go through it on a
 desktop window and on a phone, and answer below.
@@ -40,7 +40,8 @@ a substitute for it.
 4. **There are now two guided experiences**: Discover (model, undertone, finish, eyes, lips,
    cheeks, a whole look) and this Shade Finder (depth, undertone, one foundation). They share
    the undertone wording. Whether both should exist is a product question.
-5. **Two intents are titled "Feature 007"**: `007-beauty-discovery.md` and `Feature7.md`. The
-   evidence and tests for this one are filed as 013. Renaming the file would settle it.
+5. **Two intents are titled "Feature 007"** in their text: `007-beauty-discovery.md` and this one. The file
+   was first added as `Feature7.md` and is now `013-guided-shade-experience.md`, matching its evidence and
+   tests. Its title line still reads "Feature 007", as its author wrote it.
 6. **The consultation notice is still unreachable** with the shipped catalog (best score never
    exceeds 1.0), as recorded for Feature 002.

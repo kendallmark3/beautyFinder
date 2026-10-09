@@ -1,4 +1,4 @@
-// Guided Shade Experience tests (intent/features/Feature7.md, filed as 013).
+// Guided Shade Experience tests (intent/features/013-guided-shade-experience.md, filed as 013).
 // The intent's six functional success criteria are taken, in order, as AC-1 to AC-6.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';

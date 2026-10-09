@@ -1,4 +1,4 @@
-// Guided Shade Experience. See intent/features/Feature7.md
+// Guided Shade Experience. See intent/features/013-guided-shade-experience.md
 // Presentation only: which shades match is decided by POST /api/shade-match (BR-SM-1..BR-SM-5).
 // SEC-2: depth and undertone stay in the page apart from that one request. Nothing here logs or stores them.
 import { shadeColor } from './shade-color.js';
