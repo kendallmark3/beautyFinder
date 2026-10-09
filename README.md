@@ -3,6 +3,17 @@
 **Intermediate Intent Skills for feature teams.** Built on the
 [intent-drive-starter](https://github.com/kendallmark3/intent-drive-starter) base.
 
+![The Beauty Advisor home page: a centred headline above four portraits, with 260 Golden Tan picked from the shade swatches](docs/images/home.jpg)
+
+**Learn the method:** [Progressive Intent: The Practical Specification for Intent-Driven Engineering](https://www.learnteachmaster.org/post/progressive-intent-the-practical-specification-for-intent-driven-engineering)
+on [learnteachmaster.org](https://www.learnteachmaster.org). For a shorter start, read
+[Intent-Driven Engineering, Simplified](https://www.learnteachmaster.org/post/intent-driven-engineering-simplified).
+
+**Where this repo is now:** the screenshot shows the app after fourteen intents, each built from a file in
+[`intent/features/`](intent/features/) and proven in [`evidence/`](evidence/). The list and status of every
+feature is in [`intent/project-intent.md`](intent/project-intent.md). The rest of this README is the original
+Day 04 lab guide, which starts from Feature 001 and builds Feature 002.
+
 You're a feature-team developer on **Beauty Advisor**, a shopper-facing beauty app.
 Feature 001 (Product Catalog) is already shipped, with proof. Your story for today is
 **Feature 002: Shade Finder**: recommend a shopper's three closest foundation shades.
