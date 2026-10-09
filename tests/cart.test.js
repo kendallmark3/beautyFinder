@@ -135,7 +135,10 @@ test('AC-7: /cart.html shows lines, quantity controls and total, and every page 
 test('AC-8: checkout says it is a demo and sends nothing', async () => {
   const html = await text('/cart.html');
   assert.match(html, /id="checkout-notice" hidden>This is a demo\. No order is placed and no payment is taken\./);
-  assert.match(html, /\$\('checkout'\)\.onclick = \(\) => \{ \$\('checkout-notice'\)\.hidden = false; \};/);
+  // The handler (rebuilt by Feature 014) shows the notice and makes no request.
+  const handler = html.match(/\$\('checkout'\)\.onclick = \(\) => \{[\s\S]*?\n    \};/)[0];
+  assert.match(handler, /\$\('checkout-notice'\)\.hidden = false;/);
+  assert.doesNotMatch(handler, /fetch|XMLHttpRequest|sendBeacon|location\.href|submit/);
   assert.deepEqual([...html.matchAll(/fetch\(([^,)]*)/g)].map((m) => m[1]), ["'/api/cart/price'"]);
   assert.doesNotMatch(html, /<form|type="(email|password|tel)"|name="card/i);
 });

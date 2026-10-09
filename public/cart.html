@@ -5,39 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Beauty Advisor · Bag</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/cart.css" />
 </head>
 <body>
   <header>
     <h1><a class="brand" href="/">Beauty Advisor</a></h1>
     <nav aria-label="Main"><a href="/">Home</a><a href="/discover.html">Discover</a><a href="/shade-finder.html">Shade Finder</a><a class="bag-link" href="/cart.html" aria-current="page">Bag (<span data-bag-count>0</span>)</a></nav>
   </header>
-  <main>
-    <div class="eyebrow">Feature 005 · Bag</div>
-    <h2>Your bag</h2>
-    <div class="panel" id="empty" hidden>
-      <p>Your bag is empty.</p>
-      <a class="cta" href="/shade-finder.html">Find my shade</a>
-      <a class="quiet-link" href="/#collection">Shop the collection</a>
+  <main class="bag-page">
+    <div class="eyebrow">Your selection</div>
+    <h2>Your bag<span class="bag-size" id="bag-size"></span></h2>
+
+    <div class="panel bag-empty" id="empty" hidden>
+      <span class="bag-glyph" aria-hidden="true"></span>
+      <h3>Your bag is waiting</h3>
+      <p>Build a whole look, find the shade that matches you, or browse the collection.</p>
+      <a class="cta" href="/discover.html">Discover my look</a>
+      <div>
+        <a class="quiet-link" href="/shade-finder.html">Find my shade</a>
+        <a class="quiet-link" href="/#collection">Shop the collection</a>
+      </div>
     </div>
-    <div class="panel" id="bag" hidden>
-      <div id="lines"></div>
-      <div class="error" id="error" hidden></div>
-      <div id="suggestions"></div>
-      <div class="summary" id="summary">
+
+    <div class="bag-layout" id="bag" hidden>
+      <div class="bag-main">
+        <div class="panel">
+          <div id="lines"></div>
+          <div class="error" id="error" hidden></div>
+        </div>
+        <div class="bundle-track">
+          <div id="unlocked"></div>
+          <div id="suggestions"></div>
+        </div>
+      </div>
+      <aside class="panel summary" id="summary" aria-label="Order summary">
+        <h3>Order summary</h3>
         <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
         <div id="savings"></div>
         <div class="row total"><span>Total</span><span id="total"></span></div>
         <div class="fine">Tax and shipping are not included in this demo.</div>
         <button class="cta" type="button" id="checkout">Checkout</button>
-        <div class="notice" id="checkout-notice" hidden>This is a demo. No order is placed and no payment is taken.</div>
-      </div>
+      </aside>
     </div>
+
+    <section class="checkout-preview" id="checkout-panel" hidden aria-live="polite">
+      <div class="ready">
+        <span class="tick" aria-hidden="true"></span>
+        <div>
+          <div class="eyebrow">Checkout preview</div>
+          <h3>Your bag is ready</h3>
+        </div>
+      </div>
+      <ol class="journey" id="journey" aria-label="Checkout steps"></ol>
+      <div class="receipt" id="receipt"></div>
+      <div class="notice" id="checkout-notice" hidden>This is a demo. No order is placed and no payment is taken.</div>
+      <div class="preview-actions">
+        <a class="cta" href="/#collection">Keep shopping</a>
+        <button class="link-btn" type="button" id="close-checkout">Back to my bag</button>
+      </div>
+    </section>
   </main>
   <script type="module">
     import { shadeColor } from '/shade-color.js';
-    import { MAX_LINE_QUANTITY, formatMoney, lineKey, loadBag, pricingRequest, removeLine, saveBag, setQuantity, updateBagCount } from '/cart.js';
+    import { MAX_LINE_QUANTITY, countItems, formatMoney, lineKey, loadBag, pricingRequest, removeLine, saveBag, setQuantity, updateBagCount } from '/cart.js';
+    import { JOURNEY, categoryLetter, itemCountLabel, receiptRows } from '/bag-view.js';
     const $ = (id) => document.getElementById(id);
     let lines = loadBag();
+    let priced = null;
 
     function el(tag, className, text) {
       const node = document.createElement(tag);
@@ -52,12 +86,14 @@
       render();
     }
 
-    function row(line, unitPriceCents) {
+    function row(line, unitPriceCents, category) {
       const key = lineKey(line);
       const r = el('div', 'bag-line');
-      const dot = el('span', line.shadeCode ? 'swatch' : '');
-      if (line.shadeCode) dot.style.background = shadeColor(line.depth, line.undertone);
-      r.appendChild(dot);
+      // A shade shows its colour; anything else shows a tile for its category.
+      const visual = line.shadeCode ? el('span', 'swatch') : el('span', 'thumb', categoryLetter(category));
+      if (line.shadeCode) visual.style.background = shadeColor(line.depth, line.undertone);
+      visual.setAttribute('aria-hidden', 'true');
+      r.appendChild(visual);
       const info = el('div');
       info.appendChild(el('h3', '', line.name));
       info.appendChild(el('p', '', line.shadeCode ? `Shade ${line.shadeName} · ${formatMoney(unitPriceCents)} each` : `${formatMoney(unitPriceCents)} each`));
@@ -81,12 +117,29 @@
       return r;
     }
 
+    // The checkout preview: where a real checkout would go next, and what would be ordered.
+    function drawPreview() {
+      $('journey').replaceChildren(...JOURNEY.map((step, i) => {
+        const li = el('li', step.inDemo ? 'done' : '');
+        li.append(el('span', 'node', step.inDemo ? '✓' : String(i + 1)), el('b', '', step.label), el('small', '', step.inDemo ? 'Complete' : 'Not in this demo'));
+        return li;
+      }));
+      $('receipt').replaceChildren(el('div', 'receipt-title', `Order preview · ${itemCountLabel(countItems(lines))}`), ...receiptRows(lines, priced).map((r) => {
+        const line = el('div', `r ${r.kind}`);
+        const name = el('span', '', r.label);
+        if (r.detail) name.append(' ', el('small', '', r.detail));
+        line.append(name, el('span', 'dots'), el('span', '', r.amountCents < 0 ? `−${formatMoney(-r.amountCents)}` : formatMoney(r.amountCents)));
+        return line;
+      }));
+    }
+
     async function render() {
       updateBagCount(lines);
+      $('bag-size').textContent = lines.length ? itemCountLabel(countItems(lines)) : '';
       $('empty').hidden = lines.length > 0;
       $('bag').hidden = lines.length === 0;
       $('error').hidden = true;
-      if (!lines.length) return;
+      if (!lines.length) { $('checkout-panel').hidden = true; return; }
       try {
         // The server prices the bag. Only product ids and quantities are sent (SEC-4).
         const res = await fetch('/api/cart/price', {
@@ -95,16 +148,23 @@
           body: JSON.stringify(pricingRequest(lines)),
         });
         if (!res.ok) throw new Error('pricing failed');
-        const priced = await res.json();
-        const unit = new Map(priced.lines.map((l) => [l.productId, l.unitPriceCents]));
-        $('lines').replaceChildren(...lines.map((l) => row(l, unit.get(l.productId))));
+        priced = await res.json();
+        const byId = new Map(priced.lines.map((l) => [l.productId, l]));
+        $('lines').replaceChildren(...lines.map((l) => row(l, byId.get(l.productId).unitPriceCents, byId.get(l.productId).category)));
         $('subtotal').textContent = formatMoney(priced.subtotalCents);
         $('total').textContent = formatMoney(priced.totalCents);
-        // Feature 006: the server decides bundles; this only displays them.
+        // Features 006 and 014: the server decides bundles; this only displays them.
         $('savings').replaceChildren(...priced.bundles.map((b) => {
           const r = el('div', 'row saving');
           r.append(el('span', '', `${b.name} · ${b.percentOff}% off the set`), el('span', '', `−${formatMoney(b.savingCents)}`));
           return r;
+        }));
+        $('unlocked').replaceChildren(...priced.bundles.map((b) => {
+          const u = el('div', 'unlocked');
+          const words = el('div');
+          words.append(el('b', '', `${b.name} unlocked`), el('small', '', b.items.map((i) => i.name).join(' + ')));
+          u.append(el('span', 'seal', '✓'), words, el('span', 'save', `−${formatMoney(b.savingCents)}`));
+          return u;
         }));
         $('suggestions').replaceChildren(...priced.suggestions.map((s) => {
           const n = el('div', 'notice', `Add a ${s.missingCategory} to make a ${s.name} and save ${s.percentOff}% on the set. `);
@@ -114,14 +174,24 @@
           return n;
         }));
         $('summary').hidden = false;
+        if (!$('checkout-panel').hidden) drawPreview();
       } catch {
         $('summary').hidden = true;
+        $('checkout-panel').hidden = true;
         $('error').textContent = 'We could not price your bag just now. Please try again.';
         $('error').hidden = false;
       }
     }
 
-    $('checkout').onclick = () => { $('checkout-notice').hidden = false; };
+    // Checkout is a demo stop (Feature 005): it shows the preview and the notice, and sends nothing.
+    $('checkout').onclick = () => {
+      if (!priced) return;
+      drawPreview();
+      $('checkout-notice').hidden = false;
+      $('checkout-panel').hidden = false;
+      $('checkout-panel').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    };
+    $('close-checkout').onclick = () => { $('checkout-panel').hidden = true; window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
     render();
   </script>
 </body>

@@ -1,0 +1,82 @@
+/* Feature 014: Bag Experience. Page width, gutter and background come from styles.css. */
+.bag-page h2 { font-size: 44px; margin-bottom: 20px; }
+.bag-size { margin-left: 12px; font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #6b5a50; vertical-align: middle; }
+.bag-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+.bag-layout .panel { margin-bottom: 0; }
+.bag-layout .bag-line:last-child { border-bottom: 0; }
+.bag-line { animation: bag-rise .45s ease both; }
+.bag-line .swatch { box-shadow: 0 4px 12px rgba(60, 30, 15, .2); border: 2px solid #fff; }
+.thumb { display: grid; place-items: center; width: 40px; height: 40px; background: #111; color: #c9a36a; font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 20px; }
+
+/* Order summary */
+.bag-layout .summary { position: sticky; top: 92px; margin: 0; max-width: none; padding: 24px; border-top: 3px solid #c9a36a; }
+.summary h3 { margin: 0 0 12px; font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 400; }
+.summary .cta { margin-top: 18px; padding: 15px 28px; }
+
+/* Bundles: unlocked, or one product away */
+.bundle-track { margin-top: 16px; display: grid; gap: 10px; }
+.unlocked { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; background: #111; color: #fff; padding: 16px 20px; animation: bag-rise .5s ease both; }
+.unlocked .seal { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #c9a36a; color: #111; font-size: 20px; font-weight: 700; }
+.unlocked b { display: block; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+.unlocked small { display: block; margin-top: 3px; font-size: 13px; color: #cfc6bd; }
+.unlocked .save { font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 24px; color: #c9a36a; white-space: nowrap; }
+.bundle-track #suggestions .notice { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; background: rgba(255, 255, 255, .75); border: 1px dashed #b57a1a; }
+.bundle-track #suggestions .notice + .notice { margin-top: 10px; }
+
+/* Checkout preview */
+.checkout-preview { margin-top: 32px; background: #fff; border: 1px solid #e5e2dc; border-top: 3px solid #111; padding: 32px; scroll-margin-top: 92px; animation: bag-rise .5s ease both; }
+.ready { display: flex; align-items: center; gap: 18px; }
+.ready h3 { margin: 4px 0 0; font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 34px; font-weight: 400; }
+.tick { position: relative; flex: none; width: 56px; height: 56px; border-radius: 50%; background: #2e6b3f; animation: bag-pop .5s ease-out both; }
+.tick::after { content: ""; position: absolute; left: 20px; top: 12px; width: 13px; height: 24px; border: solid #fff; border-width: 0 4px 4px 0; transform: rotate(45deg); }
+
+.journey { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); margin: 30px 0 6px; padding: 0; }
+.journey li { position: relative; text-align: center; font-size: 13px; }
+.journey li::before { content: ""; position: absolute; top: 15px; left: -50%; width: 100%; height: 2px; background: #e0d6cd; }
+.journey li:first-child::before { display: none; }
+.journey .node { position: relative; z-index: 1; display: grid; place-items: center; width: 32px; height: 32px; margin: 0 auto 8px; border-radius: 50%; background: #fff; border: 2px solid #cdbfb3; color: #8a7a6e; font-weight: 600; }
+.journey li.done .node { background: #c9a36a; border-color: #c9a36a; color: #111; }
+.journey b { display: block; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; }
+.journey small { display: block; margin-top: 2px; font-size: 11.5px; color: #8a7a6e; }
+.journey li:not(.done) b { color: #8a7a6e; }
+
+.receipt { max-width: 520px; margin: 26px auto 0; padding: 22px 24px; background: #fbf6f1; border-top: 2px dashed #cdbfb3; border-bottom: 2px dashed #cdbfb3; }
+.receipt-title { margin: 0 0 12px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #b57a1a; font-weight: 700; text-align: center; }
+.receipt .r { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; font-size: 14.5px; }
+.receipt .r .dots { flex: 1; border-bottom: 1px dotted #b9aba0; transform: translateY(-3px); }
+.receipt .r small { color: #6b5a50; }
+.receipt .r.subtotal { margin-top: 8px; padding-top: 12px; border-top: 1px solid #ddd0c5; }
+.receipt .r.saving { color: #2e6b3f; font-weight: 600; }
+.receipt .r.total { margin-top: 6px; padding-top: 12px; border-top: 1px solid #111; font-size: 19px; font-weight: 600; }
+.checkout-preview .notice { max-width: 520px; margin: 18px auto 0; text-align: center; }
+.preview-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 22px; margin-top: 22px; }
+.preview-actions .cta { margin-top: 0; }
+.link-btn { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; color: #111; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; text-decoration: underline; }
+
+/* Empty bag */
+.bag-empty { text-align: center; padding: 48px 24px; }
+.bag-empty h3 { margin: 18px 0 6px; font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 30px; font-weight: 400; }
+.bag-empty p { margin: 0 0 8px; color: #4a3b33; }
+.bag-empty .quiet-link { display: inline-block; margin: 16px 10px 0; }
+.bag-glyph { position: relative; display: inline-block; width: 64px; height: 58px; margin-top: 22px; border: 2px solid #111; border-top-width: 6px; }
+.bag-glyph::before { content: ""; position: absolute; left: 14px; top: -30px; width: 32px; height: 26px; border: 2px solid #111; border-bottom: 0; border-radius: 18px 18px 0 0; }
+.bag-glyph::after { content: ""; position: absolute; left: 50%; top: 18px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: #c9a36a; }
+
+@keyframes bag-rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes bag-pop { from { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.12); } }
+
+@media (max-width: 860px) {
+  .bag-page h2 { font-size: 36px; }
+  .bag-layout { grid-template-columns: 1fr; gap: 16px; }
+  .bag-layout .summary { position: static; padding: 18px; }
+  .unlocked { grid-template-columns: auto 1fr; padding: 14px 16px; }
+  .unlocked .save { grid-column: 2; font-size: 20px; }
+  .checkout-preview { padding: 22px 16px; margin-top: 20px; }
+  .ready h3 { font-size: 28px; }
+  .tick { width: 46px; height: 46px; }
+  .tick::after { left: 16px; top: 9px; width: 11px; height: 20px; }
+  .journey b { font-size: 10.5px; letter-spacing: .8px; }
+  .journey small { font-size: 10px; max-width: 9ch; margin-left: auto; margin-right: auto; line-height: 1.25; }
+  .receipt { padding: 18px 14px; }
+}
+[hidden] { display: none !important; }
