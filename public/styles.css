@@ -27,6 +27,9 @@ input[type=range] { width: 100%; }
 .hero h2 { font-family: Didot, "Bodoni 72", "Playfair Display", Georgia, serif; font-size: 54px; line-height: 1.06; margin: 14px 0 18px; }
 .hero p { font-size: 17px; line-height: 1.5; color: #4a3b33; max-width: 42ch; margin: 0 0 8px; }
 a.cta { display: inline-block; text-decoration: none; font-size: 13px; }
+.hero .cta.primary { display: table; }
+.hero .cta.primary + .quiet-link { margin-left: 0; }
+.hero .quiet-link { display: inline-block; margin-top: 18px; }
 .quiet-link { margin-left: 20px; color: #111; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
 .hero .swatches { margin-top: 10px; gap: 6px; }
 .hero .swatch { width: 22px; height: 22px; padding: 0; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
