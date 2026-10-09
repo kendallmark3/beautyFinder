@@ -16,6 +16,11 @@
 - **BR-BN-4** Savings = sum of bundle savings. Total = subtotal − savings.
 - **BR-BN-5** After sets are formed, a bundle is suggested when the units left over cover all but exactly one of its categories. The suggestion names the missing category.
 
+## Recommendations (Feature 015)
+- **BR-REC-1** With no category, the picks are the first catalog product in each routine category, in the order the routine is applied (serum, foundation, lipstick, mascara), up to three. With the current catalog: Hydra Glow Serum, the foundation, Velvet Matte Lipstick.
+- **BR-REC-2** With a category, the picks are that category's products in catalog order, up to three. An unknown category gives an empty list, not an error. The filter is case-insensitive; `all` means no category.
+- **BR-REC-3** Each pick carries a reason that says what the product is for in the routine. Reasons make no claim about popularity, sales, or how well a product suits the shopper. Nothing about the shopper is used to choose picks.
+
 ## Shade matching (Feature 002)
 - **BR-SM-1** Score = |shopper depth − shade depth| + undertone penalty. Lower is better.
 - **BR-SM-2** Undertone penalty: same = 0 · neutral vs cool or warm = 0.5 · cool vs warm = 1.5.

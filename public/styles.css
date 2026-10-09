@@ -127,6 +127,8 @@ header nav a.bag-link.bump { animation: bump .35s ease-out; }
 .bundles { max-width: var(--page); margin: 0 auto; padding: 36px 40px 0; text-align: center; }
 .bundle-card { text-align: left; }
 #collection { text-align: center; }
+.picks-link { margin: -8px 0 20px; }
+.picks-link .quiet-link { margin-left: 0; }
 #collection .filters button:last-child { margin-right: 0; }
 .bundle-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 12px; }
 .bundle-card { background: #111; color: #fff; padding: 20px 24px; display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: center; transition: transform .2s ease; }
