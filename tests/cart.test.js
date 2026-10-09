@@ -127,7 +127,7 @@ test('AC-7: /cart.html shows lines, quantity controls and total, and every page 
   assert.match(html, /removeLine\(lines, key\)/);
   for (const path of ['/', '/shade-finder.html', '/cart.html']) {
     const header = (await text(path)).match(/<header>[\s\S]*?<\/header>/)[0];
-    assert.match(header, /<a class="bag-link" href="\/cart\.html">Bag \(<span data-bag-count>0<\/span>\)<\/a>/, path);
+    assert.match(header, /<a class="bag-link" href="\/cart\.html"[^>]*>Bag \(<span data-bag-count>0<\/span>\)<\/a>/, path);
     assert.match(await text(path), /updateBagCount\(/, path);
   }
 });
