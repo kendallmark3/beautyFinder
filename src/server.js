@@ -9,7 +9,10 @@ import { sendJson } from './lib/http.js';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, '..', 'public');
 const ROUTES_DIR = path.join(here, 'routes');
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml' };
+const TYPES = {
+  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp',
+};
 
 export async function loadRoutes() {
   const files = (await readdir(ROUTES_DIR)).filter((f) => f.endsWith('.js')).sort();
@@ -58,8 +61,13 @@ export async function createServer() {
   });
 }
 
+// SEC-5: this machine only, unless HOST says otherwise. There is no sign-in.
+export function listenAddress(env = process.env) {
+  return { port: Number(env.PORT) || 3000, host: env.HOST || '127.0.0.1' };
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const port = Number(process.env.PORT) || 3000;
+  const { port, host } = listenAddress();
   const server = await createServer();
-  server.listen(port, () => console.log(`Beauty Advisor running at http://localhost:${port}`));
+  server.listen(port, host, () => console.log(`Beauty Advisor running at http://${host === '127.0.0.1' ? 'localhost' : host}:${port}`));
 }

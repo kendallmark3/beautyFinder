@@ -28,3 +28,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 009 | [Navigation Home](features/009-navigation.md) | Done (see `evidence/009-navigation/`) |
 | 010 | [Balanced Layout](features/010-balanced-layout.md) | Done (see `evidence/010-balanced-layout/`) |
 | 011 | [One Background](features/011-one-background.md) | Done (see `evidence/011-one-background/`) |
+| 012 | [Hardening](features/012-hardening.md) | Done (see `evidence/012-hardening/`) |

@@ -12,3 +12,5 @@ tests/             node:test, one file per feature
 - Routes import helpers from `src/lib/http.js`, never from `server.js` (avoids a circular import).
 - Handlers receive `{ req, res, query, body }`. `body` is parsed JSON for POST.
 - No database. No external calls. No runtime dependencies.
+- `npm start` listens on `127.0.0.1` (SEC-5). `PORT` and `HOST` override the port and address.
+- Routes and catalog data are read once at start-up: restart the server after adding a route or changing `src/data/`. Files in `public/` are read on every request.

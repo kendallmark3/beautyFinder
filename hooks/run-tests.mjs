@@ -2,6 +2,14 @@
 // Exit code 2 sends the failure back to Claude so it fixes the break before moving on.
 // Deterministic: this runs every time, whatever the model decides.
 import { spawnSync } from 'node:child_process';
+import { nodeProblem } from '../scripts/check-node.mjs';
+
+// An old Node fails before any test runs. Say so, rather than report failing tests.
+const problem = nodeProblem();
+if (problem) {
+  console.error(problem);
+  process.exit(2);
+}
 
 const run = spawnSync('npm', ['test', '--silent'], { encoding: 'utf8', shell: true });
 if (run.status !== 0) {
