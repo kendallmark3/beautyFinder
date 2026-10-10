@@ -49,11 +49,15 @@
     </div>
 
     <section class="checkout-preview" id="checkout-panel" hidden aria-live="polite">
+      <img class="preview-photo" src="/photos/group.jpg" alt="Three women with lighter, medium and deeper skin, close together" />
+      <div class="preview-body">
+      <span class="sparkles" aria-hidden="true"></span>
       <div class="ready">
         <span class="tick" aria-hidden="true"></span>
         <div>
           <div class="eyebrow">Checkout preview</div>
-          <h3>Your bag is ready</h3>
+          <h3>You're all set</h3>
+          <p class="cheer">Your bag is ready, and it looks good.</p>
         </div>
       </div>
       <ol class="journey" id="journey" aria-label="Checkout steps"></ol>
@@ -63,8 +67,10 @@
         <a class="cta" href="/#collection">Keep shopping</a>
         <button class="link-btn" type="button" id="close-checkout">Back to my bag</button>
       </div>
+      </div>
     </section>
   </main>
+  <footer class="site-footer">Photography from Pexels. The people pictured are stock models and do not endorse this demo or its products. <a href="/credits.html">Photo credits</a></footer>
   <script type="module">
     import { shadeColor } from '/shade-color.js';
     import { MAX_LINE_QUANTITY, countItems, formatMoney, lineKey, loadBag, pricingRequest, removeLine, saveBag, setQuantity, updateBagCount } from '/cart.js';
