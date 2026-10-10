@@ -112,6 +112,6 @@ test('AC-8: the bag and the preview fit a phone-width screen', () => {
   const narrow = css.slice(css.indexOf('@media (max-width: 860px) {'));
   assert.match(narrow, /\.bag-layout \{ grid-template-columns: 1fr;/);
   assert.match(narrow, /\.bag-layout \.summary \{ position: static;/);
-  assert.match(narrow, /\.checkout-preview \{ padding: 22px 16px;/);
+  assert.match(narrow, /\.preview-body \{ padding: 22px 16px;/);
   assert.match(css, /\.journey \{[^}]*grid-template-columns: repeat\(4, 1fr\);/);
 });

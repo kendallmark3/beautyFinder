@@ -2,6 +2,8 @@
 
 **Status:** Done · Evidence: `evidence/014-bag-experience/` · **Team:** Commerce squad
 
+**Later changes:** Feature 016 tinted the bag's boxes, made the order summary a dark card, and added a photograph and a cheerful heading to the checkout preview. See `intent/features/016-happy-checkout.md`. The text below is as written at the time.
+
 ## Story
 As a shopper who has added products, I want my bag to look and feel like the rest of the
 site and to show me clearly where I am on the way to checking out, so that finishing feels
