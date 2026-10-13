@@ -28,7 +28,7 @@ details in `intent/features/`. Don't edit this file for one feature.
 - `src/lib/catalog.js` is the only reader of `src/data/products.json`. Other features go through its functions (`getFoundationShades()` for shade matching).
 - The shopper's bag lives only in the browser (`public/cart.js`, session storage, SEC-4). The server prices it statelessly through `POST /api/cart/price`, which is sent product ids and quantities and never a shade; bundle rules (`src/lib/bundles.js`) are applied there.
 - The `<header>` is repeated in all five HTML pages and must stay identical apart from `aria-current`; `tests/nav.test.js` checks it.
-- Page width, gutter and background are defined once in `public/styles.css` (`--page`, `--gutter`, `body`). Do not give a page or section its own.
+- Page width, gutter, background and the type scale are defined once in `public/styles.css` (`--page`, `--gutter`, `body`, and the root `font-size` on `html`). Do not give a page or section its own. Every font size is in `rem`, never pixels, and none is below `0.8rem`; `tests/scale.test.js` checks all five stylesheets.
 - The photo models are `PHOTO_MODELS` in `public/models.js`. Adding or replacing a photo means updating that list, `public/credits.html`, the hero markup in `public/index.html`, and the file list in `tests/photos.test.js` together. No photograph is ever recoloured or filtered.
 - Later features changed earlier ones (008 retired the drawings of 003, 004 and 007; 010 and 011 changed layout and background). Each intent file carries a "Later changes" note, and the later intent governs.
 - Shade ranking rules exist in two places that must agree: `context/business-rules.md` (BR-SM-1 to BR-SM-5, the source of truth) and `.claude/skills/shade-science/SKILL.md`.

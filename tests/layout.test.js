@@ -21,7 +21,7 @@ const rule = (sheet, selector) => {
 };
 
 test('AC-1: the header and every section share one page width and gutter', () => {
-  assert.match(rule(css, ':root'), /--page: 1160px;/);
+  assert.match(rule(css, ':root'), /--page: min\(1480px, 92vw\);/);
   assert.match(rule(css, ':root'), /--gutter: max\(40px, calc\(\(100vw - var\(--page\)\) \/ 2 \+ 40px\)\);/);
   assert.match(rule(css, 'header'), /padding: 20px var\(--gutter\);/);
   for (const s of ['main', '.bundles', '.site-footer']) {
@@ -72,5 +72,5 @@ test('AC-5: the swatches, bundle heading, band text, collection heading and foot
 test('AC-6: a row of products that does not fill the width is centred', () => {
   const grid = rule(css, '.grid');
   assert.match(grid, /display: flex; flex-wrap: wrap; justify-content: center;/);
-  assert.match(rule(css, '.card'), /max-width: 320px;/);
+  assert.match(rule(css, '.card'), /max-width: 24rem;/);
 });
