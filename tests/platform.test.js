@@ -59,9 +59,10 @@ test('AC-3: an old Node stops npm test and the edit hook with a message naming b
 
 test('AC-4: CI runs on push and pull request and can be started by hand', async () => {
   const yml = await repo('.github/workflows/ci.yml');
-  assert.match(yml, /^on: \[push, pull_request, workflow_dispatch\]$/m);
+  // Feature 018 rewrote the triggers as a block and runs the tests with coverage.
+  for (const trigger of ['push:', 'pull_request:', 'workflow_dispatch:']) assert.match(yml, new RegExp(`^  ${trigger}$`, 'm'), trigger);
   assert.match(yml, /node-version: 22/);
-  assert.match(yml, /run: npm test/);
+  assert.match(yml, /run: npm run test:coverage/);
 });
 
 test('AC-5: at phone width the header stacks the brand above the links and splits no label', async () => {

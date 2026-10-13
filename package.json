@@ -7,8 +7,11 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "start": "node src/server.js",
+    "check": "node scripts/check-syntax.mjs",
     "pretest": "node scripts/check-node.mjs",
     "test": "node --test \"tests/**/*.test.js\"",
+    "pretest:coverage": "node scripts/check-node.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-exclude=\"tests/**\" --test-coverage-lines=88 --test-coverage-branches=85 --test-coverage-functions=90 \"tests/**/*.test.js\"",
     "lab:reference": "node scripts/apply-reference.mjs"
   }
 }
