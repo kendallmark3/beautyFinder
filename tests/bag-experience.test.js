@@ -28,7 +28,7 @@ const fill = (...items) => items.reduce(addItem, []);
 
 test('AC-1: the bag shows its lines beside an order summary and says how many items it holds', () => {
   assert.match(page, /<div class="bag-layout" id="bag" hidden>[\s\S]*<div id="lines"><\/div>[\s\S]*<aside class="panel summary" id="summary"/);
-  assert.match(css, /(?:^|\n)\.bag-layout \{ display: grid; grid-template-columns: minmax\(0, 1fr\) 360px;/);
+  assert.match(css, /(?:^|\n)\.bag-layout \{ display: grid; grid-template-columns: minmax\(0, 1fr\) 26rem;/);
   assert.match(page, /id="bag-size"/);
   assert.match(page, /\$\('bag-size'\)\.textContent = lines\.length \? itemCountLabel\(countItems\(lines\)\) : '';/);
   assert.equal(itemCountLabel(1), '1 item');

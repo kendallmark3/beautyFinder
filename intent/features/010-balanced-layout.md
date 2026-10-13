@@ -2,6 +2,8 @@
 
 **Status:** Done · Evidence: `evidence/010-balanced-layout/` · **Team:** Platform
 
+**Later changes:** Feature 017 made the page width a share of the window (`min(1480px, 92vw)`) in place of a fixed 1160 px, and put every font size on one scale. See `intent/features/017-screen-size-and-type.md`. The text below is as written at the time.
+
 ## Story
 As a shopper arriving on the front screen, I want it to grab me straight away and sit evenly
 across the window, so that I am not distracted by everything leaning to the right.

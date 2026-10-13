@@ -33,3 +33,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 014 | [Bag Experience](features/014-bag-experience.md) | Done (see `evidence/014-bag-experience/`) |
 | 015 | [Curated Recommendations](features/015-curated-recommendations.md) | Done (see `evidence/015-curated-recommendations/`) |
 | 016 | [Happy Checkout](features/016-happy-checkout.md) | Done (see `evidence/016-happy-checkout/`) |
+| 017 | [Screen Size and Type](features/017-screen-size-and-type.md) | Done (see `evidence/017-screen-size-and-type/`) |
