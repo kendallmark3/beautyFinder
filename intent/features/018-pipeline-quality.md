@@ -1,6 +1,6 @@
 # Feature 018: Pipeline Quality Gates
 
-**Status:** In progress · **Team:** Platform
+**Status:** Done · Evidence: `evidence/018-pipeline-quality/` · **Team:** Platform
 
 ## Story
 As the team that owns this repo, we want the pipeline to tell us more than "the tests ran",
