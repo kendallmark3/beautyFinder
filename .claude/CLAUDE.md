@@ -16,6 +16,7 @@ details in `intent/features/`. Don't edit this file for one feature.
 - Restart the server after adding a route or changing `src/data/`: both are read once at start-up. Files in `public/` are read on every request.
 - Run tests: `npm test`
 - Run one test: `node --test --test-name-pattern="AC-2" tests/catalog.test.js`
+- Pipeline checks, runnable locally: `npm run check` (every script file parses) and `npm run test:coverage` (tests, failing below 88% lines, 85% branches, 90% functions). CI runs both, and `.github/workflows/codeql.yml` scans the JavaScript. There is no linter: it would need an npm package.
 - `npm test` needs Node 22+ on `PATH` (`.nvmrc` says 22). On an older Node, `scripts/check-node.mjs` stops the run and the edit hook with a message naming the version, and nothing is tested.
 - `npm run lab:reference` copies the instructor's Feature 002 build from `reference/` over `src/`, `public/`, and `tests/`. It is the class fallback; run it only when asked.
 

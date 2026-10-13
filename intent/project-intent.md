@@ -34,3 +34,4 @@ online or at the counter with a beauty advisor. Built feature by feature, each f
 | 015 | [Curated Recommendations](features/015-curated-recommendations.md) | Done (see `evidence/015-curated-recommendations/`) |
 | 016 | [Happy Checkout](features/016-happy-checkout.md) | Done (see `evidence/016-happy-checkout/`) |
 | 017 | [Screen Size and Type](features/017-screen-size-and-type.md) | Done (see `evidence/017-screen-size-and-type/`) |
+| 018 | [Pipeline Quality Gates](features/018-pipeline-quality.md) | Done (see `evidence/018-pipeline-quality/`) |
